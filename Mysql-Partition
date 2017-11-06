@@ -40,3 +40,10 @@
 2、查看Mysql表分区语句
 SELECT partition_name part, partition_expression expr, partition_description descr, table_rows FROM 
 INFORMATION_SCHEMA.partitions WHERE TABLE_SCHEMA = schema() AND TABLE_NAME='表名';
+
+3、分区管理
+  --新增分区： ALTER TABLE 表名 ADD PARTITION (PARTITION p201010 VALUES LESS THAN (201011));
+  --删除分区:当删除了一个分区，也同时删除了该分区中所有的数据。
+             ALTER TABLE 表名 DROP PARTITION p201010;
+  --合并分区: ALTER TABLE 表名 REORGANIZE PARTITION p201001,p201002,p201003 
+            INTO (PARTITION p2010Q1 VALUES LESS THAN (201004));
