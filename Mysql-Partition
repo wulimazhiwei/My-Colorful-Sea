@@ -1,38 +1,38 @@
-#水平分区（根据列属性按行分）#
+=水平分区（根据列属性按行分）=
 举个简单例子：一个包含十年发票记录的表可以被分区为十个不同的分区，每个分区包含的是其中一年的记录。
 
 == 水平分区的几种模式：==
 * Range（范围） – 这种模式允许DBA将数据划分不同范围。例如DBA可以将一个表通过年份划分成三个分区，80年代（1980's）的数据，90年代（1990's)
                 的数据以及任何在2000年（包括2000年）后的数据。 
->create table range( 
-　　id int(11), 
-　　money int(11) unsigned not null, 
-　　date datetime 
-　　)partition by range(year(date))( 
-　　partition p2007 values less than (2008), 
-　　partition p2008 values less than (2009), 
-　　partition p2009 values less than (2010) 
-　　partition p2010 values less than maxvalue 
-)；
+              create table range( 
+　　              id int(11), 
+　　              money int(11) unsigned not null, 
+　　              date datetime 
+　　              )partition by range(year(date)
+               )(partition p2007 values less than (2008), 
+　　              partition p2008 values less than (2009), 
+　　              partition p2009 values less than (2010) 
+　　              partition p2010 values less than maxvalue 
+              );
 * Hash（哈希） – 这中模式允许DBA通过对表的一个或多个列的Hash Key进行计算，最后通过这个Hash码不同数值对应的数据区域进行分区，。例如DBA可以
                 建立一个对表主键进行分区的表。 
-create table hash( 
-　　a int(11), 
-　　b datetime 
-　　)partition by hash (YEAR(b) 
-　　partitions 4;
+              create table hash( 
+　             　 a int(11), 
+　　              b datetime 
+　　              )partition by hash (YEAR(b) 
+　　           partitions 4;
 * Key（键值） – 上面Hash模式的一种延伸，这里的Hash Key是MySQL系统产生的。 
-create table t_key( 
-　　a int(11), 
-　　b datetime) 
-　　partition by key (b) 
-　　partitions 4;
+              create table t_key( 
+　　              a int(11), 
+　　              b datetime
+              )partition by key (b) 
+　　           partitions 4;
 * List（预定义列表） – 这种模式允许系统通过DBA定义的列表的值所对应的行数据进行分割。例如：DBA建立了一个横跨三个分区的表，分别根据2004年2005
                 年和2006年值所对应的数据。 
-create table list( 
-　　a int(11), 
-　　b int(11) 
-　　)(partition by list (b) 
-　　partition p0 values in (1,3,5,7,9), 
-　　partition p1 values in (2,4,6,8,0) 
-　);
+              create table list( 
+　　              a int(11), 
+　　              b int(11) 
+　　           )(partition by list (b) 
+　　             partition p0 values in (1,3,5,7,9), 
+　　             partition p1 values in (2,4,6,8,0) 
+　             );
