@@ -25,3 +25,79 @@
     
 5、过程体
   过程体的开始与结束使用BEGIN与END进行标识。
+  
+6、变量
+  --变量定义： DECLARE l_date date DEFAULT '1999-12-31';
+  --变量赋值： SET xxx='Goodbye Cruel World';
+  --用户变量： SET @y='Goodbye Cruel World';
+  注意:
+    ①用户变量名一般以@开头
+    ②滥用用户变量会导致程序难以理解及管理
+
+7、存储过程的管理
+  --调用：call Set_Partition();
+  --查询：select name from mysql.proc where db=’数据库名’;
+        select routine_name from information_schema.routines where routine_schema='数据库名';
+        show procedure status where db='数据库名';
+        SHOW CREATE PROCEDURE 数据库.存储过程名;
+  --修改：ALTER PROCEDURE Set_Partition
+        更改用CREATE PROCEDURE 建立的预先指定的存储过程，其不会影响相关存储过程或存储功能。
+  --删除：DROP PROCEDURE Set_Partition
+  
+8、示例：
+
+* 每隔15天执行一次
+/* 程序功能：循环使用分区，每半个月一个分区，保留6个月的数据
+ 时间：2010-11-09 */
+ drop procedure if exists Set_Partition;
+ create procedure Set_Partition()
+ begin
+/* 事务回滚，其实放这里没什么作用，ALTER TABLE是隐式提交，回滚不了的。*/
+    declare exit handler for sqlexception rollback;
+    start TRANSACTION;
+ 
+/* 到系统表查出这个表的最大分区，得到最大分区的日期。在创建分区的时候，名称就以日期格式存放，方便后面维护 */
+    select REPLACE(partition_name,'p','') into @P12_Name from INFORMATION_SCHEMA.PARTITIONS where TABLE_SCHEMA='mydb_1' and table_name='terminal_parameter' order by partition_ordinal_position DESC limit 1;
+
+/* 判断最大分区的时间段，如果是前半个月的，那么根据情况需要加13,14,15,16天
+   如果是后半个月的，那么直接加15天。 +0 是为了把日期都格式化成YYYYMMDD这样的格式*/
+    IF (DAY(@P12_Name)<=15) THEN
+       CASE day(LAST_DAY(@P12_name))
+          WHEN 31 THEN set @Max_date= date(DATE_ADD(@P12_Name+0,INTERVAL 16 DAY))+0 ;
+          WHEN 30 THEN set @Max_date= date(DATE_ADD(@P12_Name+0,INTERVAL 15 DAY))+0 ;
+          WHEN 29 THEN set @Max_date= date(DATE_ADD(@P12_Name+0,INTERVAL 14 DAY))+0 ; 
+          WHEN 28 THEN set @Max_date= date(DATE_ADD(@P12_Name+0,INTERVAL 13 DAY))+0 ; 
+       END CASE;
+    ELSE
+       set @Max_date= date(DATE_ADD(@P12_Name+0, INTERVAL 15 DAY))+0;
+    END IF;
+
+/* 修改表，在最大分区的后面增加一个分区，时间范围加半个月 */
+    SET @s1=concat('ALTER TABLE terminal_parameter ADD PARTITION (PARTITION p',@Max_date,' VALUES LESS THAN 
+    (TO_DAYS (''',date(@Max_date),''')))');
+    
+    PREPARE stmt2 FROM @s1;
+    EXECUTE stmt2;
+    DEALLOCATE PREPARE stmt2;
+
+/* 取出最小的分区的名称，并删除掉 。
+    注意：删除分区会同时删除分区内的数据，慎重 */
+    select partition_name into @P0_Name from INFORMATION_SCHEMA.PARTITIONS where TABLE_SCHEMA='mydb_1' and 
+    table_name='terminal_parameter' order by partition_ordinal_position limit 1;
+    
+    SET @s=concat('ALTER TABLE terminal_parameter DROP PARTITION ',@P0_Name);
+    PREPARE stmt1 FROM @s; 
+    EXECUTE stmt1; 
+    DEALLOCATE PREPARE stmt1; 
+
+/* 提交 */
+    COMMIT ;
+ end;
+ 
+ 9、计划任务执行
+ 
+ CREATE EVENT e_Set_Partition
+    ON SCHEDULE
+    EVERY 15 day STARTS '2011-04-30 23:59:59' 
+    DO
+    call Set_Partition();
