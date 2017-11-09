@@ -57,7 +57,8 @@
     start TRANSACTION;
  
 /* 到系统表查出这个表的最大分区，得到最大分区的日期。在创建分区的时候，名称就以日期格式存放，方便后面维护 */
-    select REPLACE(partition_name,'p','') into @P12_Name from INFORMATION_SCHEMA.PARTITIONS where TABLE_SCHEMA='mydb_1' and table_name='terminal_parameter' order by partition_ordinal_position DESC limit 1;
+    select REPLACE(partition_name,'p','') into @P12_Name from INFORMATION_SCHEMA.PARTITIONS where 
+    TABLE_SCHEMA='mydb_1' and table_name='terminal_parameter' order by partition_ordinal_position DESC limit 1;
 
 /* 判断最大分区的时间段，如果是前半个月的，那么根据情况需要加13,14,15,16天
    如果是后半个月的，那么直接加15天。 +0 是为了把日期都格式化成YYYYMMDD这样的格式*/
