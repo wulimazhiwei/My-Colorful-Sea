@@ -1,0 +1,3 @@
+1、从文件中检索出含有固定字符串的sql，并输出该sql中callUUID的值，然后排序，取唯一值并计算重复的数量，最后输出重复值大于1 的callUUID和重复数值。
+more cc.log | grep "update CR_CALL_HISTORY set"|awk -F "'" '{print $2}'|sort|uniq -c | awk 'NR>1 && $1>1 {print $1,$2}'
+其中，awk  -F "'"表示以单引号作为分隔符，分割查询到的行，  '{print $2}' 表示输出分割之后的第二个元素，uniq -c 表示取唯一值，并计算重复次数。
