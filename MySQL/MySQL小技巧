@@ -1,0 +1,8 @@
+1、Ubuntu无法登入mysql的解决办法 ----- 忘记密码
+
+①cd /etc/mysql
+②vi debian.cnf，获取用户名和密码
+③按用户 "debian-sys-maint"登录，密码为password = "xxxx". 
+  mysql -udebian-sys-maint -pxxxx
+④进入mysql之后，设置自己的密码
+set password for 'root'@'localhost'=PASSWORD('123456');
