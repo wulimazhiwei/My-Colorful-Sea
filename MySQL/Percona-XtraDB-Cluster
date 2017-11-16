@@ -58,3 +58,28 @@ c、 启动SQL节点
 SQL节点的启动和普通MySQL Server的启动没有太多明显的差别，不过有一个前提就是需要在MySQL Server的配置文件my.cnf设置好[MySQL_cluster]配置
 组中的ndb-connectstring参数和[MySQLd]配置组中的ndbcluster参数。 
 root@mysql1:/root>MySQLd_safe --user=MySQL 
+
+2) 节点状态检查： 
+在各节点都启动完成后，回到管理节点，可以通过ndb_mgm来查看各节点状态： 
+[root@localhost MySQL-cluster]# ndb_mgm -e SHOW 
+Connected to Management Server at: localhost:1186 
+Cluster Configuration 
+--------------------- 
+这里显示出整个集群有5个几点，其中各节点信息如下： 
+a) 2个NDBD节点： 
+[ndbd(NDB)]     2 node(s) 
+id=2  @192.168.0.3 (Version: 5.0.51, Nodegroup: 0, Master) 
+id=3  @192.168.0.4 (Version: 5.0.51, Nodegroup: 0) 
+b) 两个SQL节点: 
+[MySQLd(API)] 2 node(s) 
+id=4  @192.168.0.1 (Version: 5.0.51) 
+id=5  @10.0.65.203 (Version: 5.0.51) 
+c) 1个管理节点: 
+[ndb_mgmd(MGM)] 1 node(s) 
+id=1  @192.168.0.5 (Version: 5.0.51) 
+
+3) 节点的关闭操作： 
+在MySQL Cluster环境中，NDB节点和管理节点的关闭都可以在管理节点的管理程序中完成，但是SQL节点却没办法。所以，在关闭整个MySQL Cluster环境
+或者关闭某个SQL节点的时候，首先必须到SQL节点主机上来关闭SQL节点程序。关闭方法和MySQL Server的关闭一样，就不累述。而NDB节点和管理节点则都
+可以在管理节点通过管理程序来完成： 
+ndb_mgm> shutdown 
