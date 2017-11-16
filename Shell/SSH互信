@@ -33,3 +33,11 @@ cat ~/.ssh/test.pub >> ~/.ssh/authorized_keys
 通常来讲：ssh和scp命令都会使用默认的id_rsa.pub和id_rsa两个文件进行认证，如果需要使用别的证书进行登录，只需附加一个参数 -i /path/，
 例如：ssh -i ~/.ssh/test admin@ip
      scp -i ~/.ssh/test admin@ip:/home/admin  ./
+
+
+2、SSH无密码验证的原理：
+Master作为客户端，要实现无密码公钥认证，连接到服务器Salve上时，需要在Master上生成一个密钥对，包括一个公钥和一个私钥，而后将公钥复制到所有
+的Salve上。当Master通过SSH链接到Salve上时，Salve会生成一个随机数并用Master的公钥对随机数进行加密，并发送给Master。Master收到加密数之
+后再用私钥解密，并将解密数回传给Salve，Salve确认解密数无误之后就允许Master进行连接了。这就是一个公钥认证过程，期间不需要手工输入密码，重要
+的过程是将Master上产生的公钥复制到Salve上。
+
