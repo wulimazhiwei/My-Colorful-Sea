@@ -1,0 +1,35 @@
+1、两台服务器A和B，要想从A到B免密登录，需要将A的证书配置到B上。
+证书生成方式：终端执行命令-> ssh-keygen -t rsa
+
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa): test   //保存key的文件名，决定了一台机器可以有多个证书，只是名字不同
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in test.
+Your public key has been saved in test.pub.
+The key fingerprint is:
+SHA256:uk2gP3TCVIlUURIZN7q4VcAvYUUlcTfUw2UHRMFgzg0 root@ubuntu
+The key's randomart image is:
++---[RSA 2048]----+
+|     ..+BXOoE*X+=|
+|      . B= B +.=o|
+|       o.o. o . .|
+|      ...o.      |
+|     oo S.       |
+|     .+=.        |
+|    ..oo.        |
+|     ..+         |
+|      o..        |
++----[SHA256]-----+
+
+这样就生成了公钥test.pub和私钥test两个文件。
+然后把A的test.pub的内容追加到B的authorized_keys（如果没有就新建）文件中
+cat ~/.ssh/test.pub >> ~/.ssh/authorized_keys
+这样通过ssh登录到B或者 scp文件到B就无需输入密码了。
+
+默认公钥文件~/.ssh/id_rsa.pub
+默认私钥文件~/.ssh/id_rsa
+
+通常来讲：ssh和scp命令都会使用默认的id_rsa.pub和id_rsa两个文件进行认证，如果需要使用别的证书进行登录，只需附加一个参数 -i /path/，
+例如：ssh -i ~/.ssh/test admin@ip
+     scp -i ~/.ssh/test admin@ip:/home/admin  ./
