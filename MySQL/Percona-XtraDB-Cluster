@@ -37,3 +37,25 @@
 
 注释：在很多情况下，术语“节点”用于指计算机，但在讨论MySQL Cluster时，它表示的是进程。在单台计算机上可以有任意数目的节点，为此，我们采用术
 语“Cluster主机”。 
+
+11、 MySQL Cluster基本管理与维护
+MySQL Cluster的管理和普通的MySQL Server管理区别较大，基本上大部分管理工作都是在管理节点上面完成，仅有少数管理内容需要在其他节点实施。
+①各节点启动与关闭
+
+要想Cluster环境能够正常工作，只好要启动一个NDB节点和一个SQL节点，另外为了完成管理，也至少要启动一个管理节点。各类节点的启动顺序也有要求，
+首先是管理节点，然后是NDB节点，最后才是SQL节点。
+
+1) 按顺序启动各节点：
+a、 启动管理节点： 
+[root@localhost MySQL-cluster]# ndb_mgmd -f /var/lib/MySQL- cluster/config.ini 
+这里执行的ndb_mgmd命令实际上就是MySQL Cluster管理服务器，可以通过-f config_file_name或者--config=config_filename来指定MySQL 
+Cluster集群的参数文件。 
+如果想了解更多关于ndb_mgmd的参数信息，可以通过运行ndb_mgmd --help来获取更详细的信息。 
+b、 启动用于存储数据的ndb节点要启动存储节点，必须在每一台ndb节点主机上面都执行ndbd程序，如果是第一 
+次启动，则需要添加--initial参数，以便进行ndb节点的初始化工作。但是，在以后的启动过程中，是不能添加该参数的，否则ndbd程序会清除在之前建立的所
+有用于恢复的数据文件和日志文件。启动命令如下 
+root@ndb1:/root>ndbd --initial 
+c、 启动SQL节点 
+SQL节点的启动和普通MySQL Server的启动没有太多明显的差别，不过有一个前提就是需要在MySQL Server的配置文件my.cnf设置好[MySQL_cluster]配置
+组中的ndb-connectstring参数和[MySQLd]配置组中的ndbcluster参数。 
+root@mysql1:/root>MySQLd_safe --user=MySQL 
