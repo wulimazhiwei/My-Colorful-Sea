@@ -50,6 +50,7 @@
 /* 程序功能：循环使用分区，每半个月一个分区，保留6个月的数据
  时间：2010-11-09 */
  drop procedure if exists Set_Partition;
+ DELIMITER //
  create procedure Set_Partition()
  begin
 /* 事务回滚，其实放这里没什么作用，ALTER TABLE是隐式提交，回滚不了的。*/
@@ -94,6 +95,8 @@
 /* 提交 */
     COMMIT ;
  end;
+ //
+ DELIMITER ;
  
  9、计划任务执行
  
