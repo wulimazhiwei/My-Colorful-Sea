@@ -1,0 +1,38 @@
+/* 程序功能：每天增加一个分区
+ 时间：2017-11-20 
+ created by 马志威*/
+ 
+drop procedure if exists Callfree_Set_Partition;
+DELIMITER //
+create procedure Callfree_Set_Partition()
+begin
+	/* 事务回滚，其实放这里没什么作用，ALTER TABLE是隐式提交，回滚不了的。*/
+   declare exit handler for sqlexception rollback;
+   start TRANSACTION;
+ 	
+ 	/* 定义两个变量，aa是分区日期20171120，bb是比aa多一天的日期 */
+ 	set @aa=DATE_FORMAT(DATE_ADD(now(),INTERVAL 12 DAY), "%Y%m%d");
+ 	set @bb=TO_DAYS(DATE_ADD(now(),INTERVAL 13 DAY));
+ 	
+	/* 修改表，在最大分区的后面增加一个分区，时间范围加一天 */
+	/* 现在已经有了往后11天的分区，为了生成新的分区方便，直接生成第12天的分区,values less than 13 天 */
+   SET @s1=concat('ALTER TABLE CR_CALL_HISTORY REORGANIZE PARTITION p0 INTO (PARTITION p',@aa,' VALUES LESS THAN (',@bb,'),partition p0 VALUES LESS THAN MAXVALUE)');
+   /* ALTER TABLE CR_CALL_HISTORY REORGANIZE PARTITION p0 INTO (PARTITION p20171202 VALUES LESS THAN (737031),partition p0 VALUES LESS THAN MAXVALUE) */
+   
+   PREPARE stmt2 FROM @s1;
+   EXECUTE stmt2;
+   DEALLOCATE PREPARE stmt2;
+   	
+	/* 提交 */
+   COMMIT ;
+end;
+//
+DELIMITER ;
+
+
+/* 创建计划任务，从2017-11-21 零点每一天执行一次 */
+CREATE EVENT e_Callfree_Set_Partition
+ON SCHEDULE
+EVERY 1 day STARTS '2017-11-21 00:00:00' 
+DO
+	call Callfree_Set_Partition();
