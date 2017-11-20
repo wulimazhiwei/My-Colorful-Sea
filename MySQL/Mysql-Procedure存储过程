@@ -105,3 +105,6 @@
     EVERY 15 day STARTS '2011-04-30 23:59:59' 
     DO
     call Set_Partition();
+
+10、动手实践
+https://github.com/wulimazhiwei/My-Colorful-Sea/blob/master/MySQL/stored_procedure.txt
