@@ -108,7 +108,7 @@
 	  call Callfree_Set_Partition();
 
 10、动手实践
-https://github.com/wulimazhiwei/My-Colorful-Sea/blob/master/MySQL/stored_procedure.txt
+https://github.com/wulimazhiwei/My-Colorful-Sea/blob/master/MySQL/Practice/stored_procedure.txt
 
 11、如果计划任务没执行
 
