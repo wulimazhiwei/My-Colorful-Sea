@@ -100,11 +100,21 @@
  
  9、计划任务执行
  
- CREATE EVENT e_Set_Partition
-    ON SCHEDULE
-    EVERY 15 day STARTS '2011-04-30 23:59:59' 
-    DO
-    call Set_Partition();
+  DROP EVENT IF EXISTS e_Callfree_Set_Partition;
+  CREATE EVENT e_Callfree_Set_Partition 
+  ON SCHEDULE EVERY 1 day STARTS TIMESTAMP '2017-11-21 03:05:14'  
+  ON COMPLETION PRESERVE 
+  DO 
+	  call Callfree_Set_Partition();
 
 10、动手实践
 https://github.com/wulimazhiwei/My-Colorful-Sea/blob/master/MySQL/stored_procedure.txt
+
+11、如果计划任务没执行
+
+SHOW VARIABLES LIKE 'event_scheduler';
+如果返回的是off表示当前是关闭状态，如果是on当前已经开启了计划任务。
+开启event_scheduler sql指令：
+    set global event_scheduler =1;
+关闭event_scheduler sql指令：
+    set global event_scheduler =0;
