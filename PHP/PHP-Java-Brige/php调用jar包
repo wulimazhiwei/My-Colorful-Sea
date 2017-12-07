@@ -20,6 +20,7 @@ php调用jar包通常使用php-java-bridge
     会生成一系列重要文件，比如Java.inc ---- 供PHP语言调用的方法包，主要是Java类。
 ⑤开启javabrige服务：java -jar JavaBridge.jar SERVLET_LOCAL:8080
     可能php.ini配置需要修改allow_url_include = On
+    http://localhost:8088/，浏览器输入，如果显示目录列表则说明服务开启成功。
 ⑥测试：测试下面的代码，如果输出java相关的信息，则说明搭建成功。
 <?php 
 require_once("http://localhost:8088/java/Java.inc");
