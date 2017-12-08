@@ -26,7 +26,7 @@ IP地址　／　所属区域　／　攻击次数
 后台在下午5:40左右紧急发布了一个补丁，目前看临时解决了这个问题，
 后台后继会重点考虑如何增加风险预警策略，比如合理控制用户最大每天的消费行为。
 
-3、打电话功能平时测试都很正常，但到高峰期间总会出现电话监控脚本就会打不通电话
+3、打电话功能平时测试都很正常，但到高峰期间总会出现电话监控脚本就会打不通电话（2017-12-08）
   问题根源查找过程：首先找到电话监控脚本打不通电话的call log，发现电话还未使用<Dail>拨出就被拒绝掉了--<Hangup schedule="1" reason="rejected"/>，
 查看源代码发现这句话出现在数据库无法连接时返回的，初步判定高峰时期数据库可能连接不上。随后查看mysql错误日志（/var/log/mysql/error.log），发现报出
 错误“Can't create thread to handle request (errno= 11)，[ERROR] Error log throttle:57 'Can't create thread to handle new 
@@ -35,3 +35,4 @@ show variables like 'max_connections';)，结果返回是1000个，心想1000个
 使用情况，发现内存不是很充分了，如果系统内存不足，性能就会受到影响，请求进来时数据库无法及时处理，就会导致线程池被占满，从而达到最大连接数。同时再查看
 mysql正在运行的线程（show full processlist;），没有特别耗时的sql在执行，因此不是sql效率的问题。如果有比较耗时的sql，就需要优化sql效率了。
   解决办法：系统内存扩容。sql查询效率优化。适当提高MySQL最大连接数。
+
