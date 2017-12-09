@@ -51,3 +51,11 @@ try {
   echo "An exception occured: "; echo $ex; echo "<br>\n";
 }
 ?>
+
+2、jar包引入
+    jar包不需要在代码里面引入，比如java_require("JPJar-1.0.0.jar");而且java_require()这个方法已经弃用了。
+    正确的方法只需将jar包放在java安装目录下面的/usr/lib/jvm/java-8-oracle/jre/lib/ext目录里面，在服务启动时会自动加载jar包。如果在服务启动时
+又导入新的jar包，需要重启服务才能是jar包生效。java -jar JavaBridge.jar SERVLET_LOCAL:8080
+    在调用时只需要注明包名和类名即可调用。例如：
+    $test = new Java("com.auto.jp.JPTest"); //产生实例
+	echo $test->print();
