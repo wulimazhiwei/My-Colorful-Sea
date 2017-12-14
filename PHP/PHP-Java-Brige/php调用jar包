@@ -5,6 +5,9 @@ php调用jar包通常使用php-java-bridge
     sudo apt-get install default-jre
     sudo apt-get install default-jdk
     sudo add-apt-repository ppa:webupd8team/java
+    如果上一步命令报错：add-apt-repository: command not found
+    则执行：sudo apt-get install software-properties-common python-software-properties
+    然后在执行：sudo add-apt-repository ppa:webupd8team/java
     sudo apt-get update
     sudo apt-get install oracle-java8-installer ---- Oracle JDK 8
 ②配置JAVA_HOME环境变量
