@@ -22,7 +22,7 @@ php调用jar包通常使用php-java-bridge
     source /etc/environment ---- 配置重载
     echo $JAVA_HOME ---- 如果输出的内容与写入的一致，则配置成成
 ③下载JavaBridge.jar ---- 用于搭建WEB服务器接口的核心JAVA应用程序包
-    https://sourceforge.net/projects/php-java-bridge/files/Binary%20package/php-java-bridge_7.1.3/exploded/
+    https://sourceforge.net/projects/php-java-bridge/files/Binary%20package/php-java-bridge_7.1.3/exploded/JavaBridge.jar/download
 ④解压JavaBridge.jar
     jar -xvf JavaBridge.jar
     会生成一系列重要文件，比如Java.inc ---- 供PHP语言调用的方法包，主要是Java类。
