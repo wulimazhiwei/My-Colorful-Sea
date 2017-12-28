@@ -17,4 +17,34 @@ Linux中有限定端口的使用范围，如果我要为我的程序预留某些
 /proc/sys/net/ipv4/ip_local_port_range定义了本地TCP/UDP的端口范围，
 你可以在/etc/sysctl.conf里面定义net.ipv4.ip_local_port_range = 1024 65000
 
+****linux中某个端口拒绝远程主机连接原因及解决方法****
+
+问题描述：
+  比如在本机telent到192.168.8.170 主机的9000 端口，被拒绝。
+  [zhu@hadoop log]$ telnet 192.168.8.170 9000 
+  Trying 192.168.8.170... 
+  telnet: connect to address 192.168.8.170: Connection refused 
+  
+原因：原因有两个
+  一个是被防火墙拦截或者该端口的监听地址为本机(127.0.0.1)，如果这样的话，只有从本机发起的对端口的访问被允许，而外部主机访问被拒绝。
+  可以通过“netstat -anp | grep 9000”命令查看该端口的监听地址：
+[zhu@hadoop log]$ netstat -anp | grep 9000 
+(Not all processes could be identified, non-owned process info
+will not be shown, you would have to be root to see it all.)
+tcp 0 0 ::ffff:127.0.0.1:9000 :::* LISTEN 6614/java
+tcp 0 0 ::ffff:127.0.0.1:46722 ::ffff:127.0.0.1:9000 TIME_WAIT -
+tcp 0 0 ::ffff:127.0.0.1:46729 ::ffff:127.0.0.1:9000 TIME_WAIT -
+tcp 0 0 ::ffff:127.0.0.1:46723 ::ffff:127.0.0.1:9000 ESTABLISHED 6733/java
+tcp 0 0 ::ffff:127.0.0.1:46726 ::ffff:127.0.0.1:9000 TIME_WAIT -
+tcp 0 0 ::ffff:127.0.0.1:46730 ::ffff:127.0.0.1:9000 ESTABLISHED 6976/java
+tcp 0 0 ::ffff:127.0.0.1:9000 ::ffff:127.0.0.1:46730 ESTABLISHED 6614/java
+tcp 0 0 ::ffff:127.0.0.1:9000 ::ffff:127.0.0.1:46723 ESTABLISHED 6614/java
+有上图可知，9000端口监听的地址为本地地址（127.0.0.1）
+
+解决方法：
+如果防火墙过滤了访问该端口的请求则设置过滤规则，放行该端口或者关闭防火墙
+如果监听地址为本机地址则修改其监听地址为真是ip地址（如192.168.8.119）。
+比如在hadoop中，可以更改本机地址（eg：localhost——>hadoop）,然后在/etc/hosts配置文件中加入主机hadoop和ip 192.168.8.119的映射关系，
+然后修改core-site.xml中fs.default.name的值为"hdfs://hadoop:9000"。
+
 
