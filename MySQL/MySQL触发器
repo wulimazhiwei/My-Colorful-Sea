@@ -1,0 +1,17 @@
+
+DROP TRIGGER IF EXISTS luck_draw_coin_earn;
+DELIMITER //
+CREATE TRIGGER luck_draw_coin_earn
+AFTER INSERT ON LUCK_DRAW
+FOR EACH ROW
+BEGIN
+declare coin_earn float(10,4);
+set @coin_earn = (select count(*) from LIMITATION where uid = NEW.uid and local_date = DATE_FORMAT(now(), "%Y-%m-%d"));
+if @coin_earn > 0 then
+update LIMITATION set LIMITATION.coin_earn = ifnull(LIMITATION.coin_earn,0)+new.credit where LIMITATION.uid = NEW.uid and LIMITATION.local_date = DATE_FORMAT(now(), "%Y-%m-%d");
+else
+insert into LIMITATION set coin_earn = NEW.credit,uid = NEW.uid,local_date = DATE_FORMAT(now(), "%Y-%m-%d"),call_cost = 0;
+end if;
+END;
+//
+DELIMITER ;
