@@ -1,3 +1,7 @@
+1、查看触发器
+show triggers; 显示所有触发器
+select TRIGGER_SCHEMA,TRIGGER_NAME,DEFINER,ACTION_STATEMENT from information_schema.TRIGGERS where 
+TRIGGER_NAME='call_insert_coin_consumption';  查看某个触发器
 
 DROP TRIGGER IF EXISTS luck_draw_coin_earn;
 DELIMITER //
