@@ -11,7 +11,7 @@
 　　              )partition by range(year(date)
                )(partition p2007 values less than (2008), 
 　　              partition p2008 values less than (2009), 
-　　              partition p2009 values less than (2010) 
+　　              partition p2009 values less than (2010), 
 　　              partition p2010 values less than maxvalue 
               );
 * Hash（哈希）– 这中模式允许DBA通过对表的一个或多个列的Hash Key进行计算，最后通过这个Hash码不同数值对应的数据区域进行分区。例如DBA可以
