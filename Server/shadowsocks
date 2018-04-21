@@ -1,0 +1,10 @@
+安装软件
+sudo apt-get update
+sudo apt-get install python-gevent python-pip
+sudo pip install shadowsocks
+apt-get install python-m2crypto
+
+客户端运行：
+nohup sslocal -s 52.38.245.133 -p 4999 -l 5999 -k houmianxn -t 500  -m aes-256-cfb &
+
+然后配置代理设置
