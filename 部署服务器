@@ -1,5 +1,6 @@
 root /ios@1407#XN
 
+----------create user and userdir-----------------
 mkdir /home/admin
 chmod -R 777 /home/admin
 useradd admin -G users -d /home/admin -s /bin/bash
@@ -153,7 +154,7 @@ vi /etc/mysql/percona-xtradb-cluster.conf.d/mysqld.cnf
 change datadir to
 /srv/percona-xtradb-cluster
 comment bellow to allow remote loing:
-#bind-address           = 127.0.0.1
+#bind-address  = 127.0.0.1
 port 3306
 
 管理节点 add:
@@ -222,9 +223,6 @@ mysql -uroot -pgame@2004#XN -e "show status like 'wsrep%';"
 将这三台服务器加入磁盘空间检测脚本
 首先要服务器免密互信
 
-----------  application  ----------------
-vi /home/admin/apacheb/htdocs/shell/kk_push.sh
-add APPLIST
 ----------  Mysql PDO  ----------------
 sudo apt-get install php-gd php-mysql
 sudo apt-get install php7.0-mysql php7.0-gd
