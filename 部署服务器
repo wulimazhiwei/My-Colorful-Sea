@@ -216,8 +216,12 @@ service mysql start
 vi status.sh
 mysql -uroot -pgame@2004#XN -e "show status like 'wsrep%';"
 
+确认各节点数据是否正常复制。
+
 ----------alarm Crontab ----------------
-ssho1
+将这三台服务器加入磁盘空间检测脚本
+首先要服务器免密互信
+
 ----------  application  ----------------
 vi /home/admin/apacheb/htdocs/shell/kk_push.sh
 add APPLIST
