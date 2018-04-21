@@ -1,0 +1,57 @@
+#!/usr/bin/bash
+
+#ssh-keygen -t rsa
+#info=`df -h |awk -F% '{print $1,$2}'|awk 'NR>1 && $5>30 {print $1"--"$5"%--"$6}'`
+#echo ${info}
+MAIL=("houmian@mavericksmobile.com" "mazhiwei@mavericksmobile.com")
+
+declare -A name
+name=(['app1']='45.79.0.30' ['app2']='45.79.2.98' ['app3']='45.33.9.41' ['app4']='139.162.61.195 ' ['app5']='173.230.139.104 ' ['app6']='139.162.182.96' ['app11']='45.79.134.236' 
+['app12']='45.79.86.23' ['app13']='45.33.125.43' ['app14']='173.255.225.108' ['app15']='45.79.77.17' ['app20']='172.104.28.200' ['app21']='172.104.6.207' ['app100']='139.162.57.225' 
+['app101']='45.33.109.201' ['console1']='172.105.230.238' ['console2']='139.162.58.42' ['console3']='172.104.173.201' ['app201']='139.162.103.66' ['app202']='69.164.201.22' 
+['app203']='173.255.193.39' ['server1']='45.79.180.31' ['op3']='139.162.24.221' ['game1']='173.230.137.234' ['game2']='96.126.100.202' ['game3']='192.155.80.99')
+for key in ${!name[*]}
+do
+	if [ ${key} = 'server1' ]
+	then
+		info=`/usr/bin/rsh ${name[${key}]} -p 14001 -l admin df -h |awk -F% '{print $1,$2}'|awk 'NR>1 && $5>80 {print $1"--"$5"%--"$6}'`
+	elif [ ${key} = 'op3' ]
+	then
+		info=`/usr/bin/rsh ${name[${key}]} -p 1407 -l admin df -h |awk -F% '{print $1,$2}'|awk 'NR>1 && $5>80 {print $1"--"$5"%--"$6}'`
+	elif [ ${key} = 'app100' ] || [ ${key} = 'app101' ]
+	then
+		info=`/usr/bin/rsh ${name[${key}]} -p 15050 -l admin df -h |awk -F% '{print $1,$2}'|awk 'NR>1 && $5>80 {print $1"--"$5"%--"$6}'`
+	else
+		info=`/usr/bin/rsh ${name[${key}]} -p 14070 -l admin df -h |awk -F% '{print $1,$2}'|awk 'NR>1 && $5>80 {print $1"--"$5"%--"$6}'`
+	fi
+	if [ -n "${info}" ]
+	then 
+		echo ${key}":"${name[${key}]} >> tt.txt
+		echo 'Filesystem--Use--Mounted on' >> tt.txt
+		echo ${info} >> tt.txt
+		echo >> tt.txt
+	fi
+done
+
+#filesize=`ls -l tt.txt | awk '{ print $5 }'`
+if [ -f 'tt.txt' ]
+then
+		for mail in ${MAIL[@]}
+		do
+			echo "To: ""${mail}" >> ./contact.txt
+			echo 'From: houmian@mavericksmobile.com' >> ./contact.txt
+			echo  "Subject: Disk Daily Check --- Disk space more than 80%" >> ./contact.txt
+			echo 'Please check server '"${key}"':'"${name[${key}]}"',disk space is not enough!!' >> ./contact.txt
+			echo	>> ./contact.txt
+			echo 'Use Command: df -h' >> ./contact.txt
+			echo 'Clean apachec/logs/: > error_log ... ' >> ./contact.txt
+			echo 'more /etc/crontab/ -> do mon log clean ... ' >> ./contact.txt
+			echo	>> ./contact.txt
+			cat ./contact.txt tt.txt > ./.sendmail.txt;
+			/usr/sbin/ssmtp ${mail} < ./.sendmail.txt;
+			rm -rf ./contact.txt
+		done
+		rm tt.txt
+fi
+
+
