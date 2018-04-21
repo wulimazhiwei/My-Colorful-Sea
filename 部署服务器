@@ -51,6 +51,7 @@ admin ALL=(ALL) NOPASSWD: ALL
 the key is to add it after the last line which says
 #includedir /etc/sudoers.d
 
+------第6步和第7步可不做-------
 6. vi /etc/php/7.0/apache2/php.ini
 max_input_vars = 15000
 
