@@ -1,0 +1,187 @@
+root /ios@1407#XN
+
+mkdir /home/admin
+chmod -R 777 /home/admin
+useradd admin -G users -d /home/admin -s /bin/bash
+chown -R admin:users /home/admin/
+chmod -R 755 /home/admin
+passwd admin
+admin/admin@1407#XN
+
+hostname game1
+vi /etc/hostname
+game1
+vi /etc/hosts
+127.0.0.1	localhost game1
+
+ssh-keygen
+
+----------OS env definition-----------------
+
+apt-get update
+
+// for php
+sudo apt-get install libaprutil1 apache2 php php-mcrypt libapache2-mod-php
+// for keyinfo
+sudo phpenmod mcrypt
+apt-get install php7.0-mbstring php-mysql
+// for textfun hashids
+apt-get install php-bcmath
+2. conf
+vi /etc/sysctl.conf
+net.netfilter.nf_conntrack_generic_timeout = 120
+net.netfilter.nf_conntrack_tcp_timeout_established = 54000
+net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120
+net.netfilter.nf_conntrack_max = 2097152
+
+3. enable automatic startup
+vi /etc/rc.local
+su root -l -c "sh /home/admin/buServer/ctrlapache.sh start"
+
+4. change port 14070
+vi /etc/ssh/sshd_config
+service ssh restart
+
+5. sudo
+vi /etc/sudoers
+admin ALL=(ALL) NOPASSWD: ALL
+the key is to add it after the last line which says
+#includedir /etc/sudoers.d
+
+6. vi /etc/php/7.0/apache2/php.ini
+max_input_vars = 15000
+
+7. vi /etc/apache2/mods-enabled/mpm_prefork.conf
+
+<IfModule mpm_prefork_module>
+    StartServers        20
+    MinSpareServers         20
+    MaxSpareServers         100
+    ServerLimit        3000
+        MaxClients        3000
+    MaxRequestWorkers      3000
+    MaxConnectionsPerChild   0
+</IfModule>
+
+8. for game server
+sudo update-rc.d -f apache2 remove
+
+---------- Rsync ----------------
+4.  rsync
+
+scp root@app201:/home/admin/enServer.tar /home/admin/
+tar -xvf  /home/admin/enServer.tar
+chown -R admin:admin /home/admin/enServer
+
+game1: Server:
+vi /etc/default/rsync
+    RSYNC_ENABLE=true   #false改true
+cp /usr/share/doc/rsync/examples/rsyncd.conf /etc
+vi /etc/rsyncd.conf
+
+[xnadmin]
+	comment = public archive
+	path = /home/admin/enServer/htdocs/xnadmin
+	use chroot = no
+#	max connections=10
+#	lock file = /var/lock/rsyncd
+# the default for read only is yes...
+	read only = yes
+	list = yes
+	uid = nobody
+	gid = nogroup
+#	exclude = 
+#	exclude from = 
+#	include =
+#	include from =
+	auth users = xn_rsync
+	secrets file = /etc/rsyncd.secrets
+	strict modes = yes
+#	hosts allow =
+#	hosts deny =
+	ignore errors = yes
+	ignore nonreadable = yes
+	transfer logging = no
+	log format = %t: host %h (%a) %o %f (%l bytes). Total %b bytes.
+	timeout = 600
+	refuse options = checksum dry-run
+	dont compress = *.gz *.tgz *.zip *.z *.rpm *.deb *.iso *.bz2 *.tbz
+
+vi /etc/rsyncd.secrets
+ xn_rsync:MianToken
+chmod 0600 /etc/rsyncd.secrets    
+sudo /etc/init.d/rsync start
+
+game2/3 Client:
+echo "MianToken" > /etc/rsyncd.pwd
+sudo chmod 0600 /etc/rsyncd.pwd
+sudo chown admin:users /etc/rsyncd.pwd
+
+----------App Crontab ----------------
+vi /etc/crontab
+
+30 07 * * * root sh /home/admin/infra/cleanup.sh
+5,15,25,35,45,55 * * * *  admin sh /home/admin/infra/monitor.sh
+
+2,7,12,17,22,27,32,37,42,47,52,57 * * * * admin rsync -a --delete --password-file=/etc/rsyncd.pwd xn_rsync@game1::xnadmin /home/admin/enServer/htdocs/xnadmin
+
+#35 1 * * 4 admin rm /home/admin/bkhtdocs.tar ; nohup tar -cvf /home/admin/bkhtdocs.tar /home/admin/apacheb/htdocs
+
+----------  Twilio SMS  ----------------
+//http://stackoverflow.com/questions/26148701/file-get-contents-ssl-operation-failed-with-code-1-and-more
+apt-get install php-curl
+
+----------  Keyinfo Crontab ----------------
+mkdir /srv
+vi /etc/fstab
+/dev/sdc /srv ext4 noatime,errors=remount-ro  0 1
+mount /srv
+
+----------  install mysql ----------------
+apt-get install percona-xtradb-cluster-5.6
+
+game1/2/3 root/game@2004#XN
+
+service mysql stop
+https://www.percona.com/doc/percona-xtradb-cluster/5.6/howtos/ubuntu_howto.html#ubuntu-howto
+cp -rp /var/lib/percona-xtradb-cluster /srv/
+vi /etc/mysql/percona-xtradb-cluster.conf.d/mysqld.cnf
+change datadir to
+/srv/percona-xtradb-cluster
+comment bellow to allow remote loing:
+#bind-address           = 127.0.0.1
+port 3306
+
+add:
+innodb_file_per_table = 1
+wsrep_provider=/usr/lib/libgalera_smm.so
+wsrep_cluster_address=gcomm://45.79.134.236,45.79.86.23,45.33.125.43,173.255.225.108,45.79.77.17
+
+binlog_format=ROW
+default_storage_engine=InnoDB
+innodb_autoinc_lock_mode=2
+wsrep_node_address=45.33.125.43
+wsrep_sst_method=xtrabackup-v2
+wsrep_cluster_name=sms-cluster
+wsrep_sst_auth="sstxnadmin:sstxnadminPassw0D"
+
+CREATE USER 'sstxnadmin'@'localhost' IDENTIFIED BY 'sstxnadminPassw0D';
+GRANT RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO 'sstxnadmin'@'localhost';
+FLUSH PRIVILEGES;
+show status like 'wsrep%';
+
+service mysql bootstrap-pxc
+
+----------alarm Crontab ----------------
+ssho1
+----------  application  ----------------
+vi /home/admin/apacheb/htdocs/shell/kk_push.sh
+add APPLIST
+----------  Mysql PDO  ----------------
+sudo apt-get install php-gd php-mysql
+sudo apt-get install php7.0-mysql php7.0-gd
+/etc/security/limits.conf
+mysql  soft  nofile 9000
+mysql  hard  nofile 20000
+admin  soft  nofile 9000
+admin  hard  nofile 20000
