@@ -1,0 +1,11 @@
+ https://www.linode.com/docs/security/ssl/how-to-make-a-selfsigned-ssl-certificate/
+ 
+ 
+apt-get update
+apt-get install openssl
+mkdir /etc/ssl/localcerts
+
+//替换example.com为自己的域名
+openssl req -new -x509 -sha256 -days 365 -nodes -out /etc/ssl/localcerts/example.com.crt -keyout /etc/ssl/localcerts/example.com.key
+chmod 600 /etc/ssl/localcerts/example.com*
+
