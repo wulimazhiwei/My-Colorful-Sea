@@ -1,0 +1,7 @@
+mysql中正确创建user和password，也正常授予权限，flush privileges。
+但在命令行也仍然无法登录mysql，并提示错误
+ERROR 1045 (28000): Access denied for user 'ios_wordconnect'@'localhost' (using password: YES)
+
+解决办法：
+在mysql系统库的user表内可能有类似于 ''@localhost 或者 ''@127.0.0.1 的匿名用户，
+mysql会先匹配它，然后就一直提示你密码错误，删掉这个匿名用户，然后执行 FLUSH PRIVILEGES;
