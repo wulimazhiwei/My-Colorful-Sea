@@ -70,6 +70,18 @@ max_input_vars = 15000
 8. for game server
 sudo update-rc.d -f apache2 remove
 
+9.编译pcre
+ sudo apt-get install libssl-dev
+ sudo apt-get install build-essential
+ wget http://nchc.dl.sourceforge.net/project/pcre/pcre/8.39/pcre-8.39.tar.gz
+ tar -xvz -f pcre-8.39.tar.gz
+ cd pcre-8.39/
+ ./configure --enable-utf8 --enable-unicode-properties
+ sudo make
+ sudo make install
+
+ ldconfig ----加载/usr/lib 或 /usr/local/lib 动态资源库
+ 
 ---------- Rsync ----------------
 4.  rsync
 
