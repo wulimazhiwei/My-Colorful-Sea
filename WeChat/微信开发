@@ -7,19 +7,6 @@
 //$nonce = $_GET['nonce'];
 //$echostr = $_GET['echostr'];
 //$appId = "wx18fb63ea607dd85f";
-//
-//$tmpArr = array($token, $timeStamp, $nonce);
-//sort($tmpArr, SORT_STRING);
-//$tmpStr = implode( $tmpArr );
-//file_put_contents('log.txt', $tmpStr."\n");
-//$tmpStr = sha1( $tmpStr );
-//
-//file_put_contents('log.txt', $tmpStr."||".$signature, FILE_APPEND);
-//if( $signature == $tmpStr){
-//    echo $echostr;
-//}else{
-//    return false;
-//}
 
 //因为很多都设置了register_globals禁止,不能用$GLOBALS["HTTP_RAW_POST_DATA"];
 $postStr = file_get_contents("php://input");
