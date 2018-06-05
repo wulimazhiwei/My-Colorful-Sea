@@ -1,3 +1,5 @@
 1、Laravel框架的应用入口为public/index.php，所有Apache/Nginx请求都会被导向这个文件。这是加载框架其他部分的起点。
 2、index.php载入composer生成的自动加载设置，然后从boostrap/app.php获取laravel应用实例，接着由laravel实例创建服务容器实例。
 3、Laravel服务容器是管理类依赖关系和执行依赖注入的强大工具。依赖注入是通过构造函数、方法或直接写入（赋值给属性）的方式，将所依赖的组件传递给类的方式。
+4、请求会被发送到HTTP的内核app/HTTP/kernel.php。
+5、应用的所有服务者都被配置在config/app.php配置文件的provider数组中，服务提供者负责启动框架的所有各种各样的组件，比如数据库、队列、路由组件等。
