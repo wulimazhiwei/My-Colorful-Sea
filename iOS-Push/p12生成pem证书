@@ -1,0 +1,4 @@
+openssl pkcs12 -in MyApnsCert.p12 -out MyApnsCert.pem -nodes
+
+MyApnsCert.p12为p12文件名，MyApnsCert.pem为要生成的pem证书名称。
+回车之后输入文件密码。
