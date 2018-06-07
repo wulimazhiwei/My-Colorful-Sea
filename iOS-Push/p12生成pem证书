@@ -1,3 +1,6 @@
+https://www.twilio.com/docs/notify/configure-ios-push-notifications#create-a-certificate-key
+
+
 sms push：
 openssl pkcs12 -in MyApnsCert.p12 -out MyApnsCert.pem -nodes
 
