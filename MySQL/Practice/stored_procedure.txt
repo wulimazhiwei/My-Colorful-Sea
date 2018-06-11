@@ -36,3 +36,31 @@ ON SCHEDULE
 EVERY 1 day STARTS '2017-11-21 00:00:00' 
 DO
 	call Callfree_Set_Partition();
+
+
+ //定时任务分区
+ 
+drop procedure if exists MSG_HISTORY_Set_Partition;
+DELIMITER //
+create procedure MSG_HISTORY_Set_Partition()
+ begin
+    declare v_part VARCHAR(10);  
+    declare v_days INT;
+ 
+    declare exit handler for sqlexception rollback;
+    start TRANSACTION;
+
+    SELECT partition_description,partition_name into v_days,v_part from information_schema.partitions where table_schema = schema() and partition_name like 'p20%' and table_name='MSG_HISTORY' order by partition_description desc limit 1;
+ 
+    SET @v_newpart=DATE_FORMAT(FROM_DAYS(v_days), "%Y%m%d");
+    SET @v_newdays=v_days+1;
+ 
+    SET @usql=concat('ALTER TABLE MSG_HISTORY REORGANIZE PARTITION pmax INTO (PARTITION p',@v_newpart,' VALUES LESS THAN (',@v_newdays,'),partition pmax VALUES LESS THAN MAXVALUE);');
+ 
+    PREPARE stmt2 FROM @usql;
+    EXECUTE stmt2;
+    DEALLOCATE PREPARE stmt2;
+    COMMIT;
+ end
+ //
+ DELIMITER ;
