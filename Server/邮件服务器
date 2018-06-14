@@ -11,3 +11,4 @@ FromLineOverride=YES
 UseTLS=YES
 
 如果发邮件的from和AuthUser不一致，则会报出该错误。
+https://wiki.archlinux.org/index.php/SSMTP
