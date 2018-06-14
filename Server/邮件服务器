@@ -1,0 +1,13 @@
+通过PHP的mail函数发邮件时报出了错误：501 mail from address must be same as authorization user
+
+查看vi /etc/ssmtp/ssmtp.conf
+
+root=houmian@mavericksmobile.com
+mailhub=smtp.exmail.qq.com:465
+rewriteDomain=mavericksmobile.com
+AuthUser=houmian@mavericksmobile.com   
+AuthPass=A123456
+FromLineOverride=YES
+UseTLS=YES
+
+如果发邮件的from和AuthUser不一致，则会报出该错误。
