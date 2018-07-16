@@ -10,7 +10,7 @@
    git config --global user.name "wulimazhiwei"
    git config --global user.email "mazhiwei@mavericksmobile.com"
 7、添加远程仓库
-   git remote add origin git@github.com:yourName/yourRepo.git
+   git remote add origin git@github.com:KKMobile/keyboard-backend-services.git
    //关联后,第一次推送master分支的所有内容命令，此后，每次本地提交后，就可以使用命令git push origin master推送最新修改
    git push -u origin master    
    
