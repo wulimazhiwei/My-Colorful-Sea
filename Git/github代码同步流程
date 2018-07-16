@@ -1,0 +1,10 @@
+1、测试环境同步远程代码库代码（可选）
+  git pull origin
+2、git add ./sms
+3、git commit -a -m "new feature"
+4、同步代码到远程MASTER分支
+  git push origin CI_MASTER
+5、产品发布后，打版本号TAG，版本号同客户端一致，同时需包含app名称、对应版本号以及上线时间，同步版本号TAG
+  git tag -a android_TextFun_V1.3.8_2018.03.23 -m "Release android TextFun V1.3.8 2018.03.23"
+  git push --tags
+6、在MASTER分支继续开发新版本需求
