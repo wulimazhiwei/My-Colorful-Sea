@@ -1,1 +1,16 @@
-
+1、创建属于自己的github账号。
+2、在本地创建ssh key
+   ssh-keygen -t rsa -C "mazhiwei@mavericksmobile.com"
+3、https://github.com/settings/keys 创建新的SSH key，
+   将~/.ssh 下的id_rsa.pub的内容复制到key里面
+4、验证是否成功：运行ssh -T git@github.com
+   如果出现Hi wulimazhiwei! You've successfully authenticated, but GitHub does not provide shell access.说明已连通。
+5、初始化git仓库： git init
+6、设置username和email，因为github每次commit都会记录他们
+   git config --global user.name "wulimazhiwei"
+   git config --global user.email "mazhiwei@mavericksmobile.com"
+7、添加远程仓库
+   git remote add origin git@github.com:yourName/yourRepo.git
+   //关联后,第一次推送master分支的所有内容命令，此后，每次本地提交后，就可以使用命令git push origin master推送最新修改
+   git push -u origin master    
+   
