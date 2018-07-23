@@ -2,3 +2,13 @@
 more cc.log | grep "update CR_CALL_HISTORY set"|awk -F "'" '{print $2}'|sort|uniq -c | awk 'NR>1 && $1>1 {print $1,$2}'
 其中，awk  -F "'"表示以单引号作为分隔符，分割查询到的行，  '{print $2}' 表示输出分割之后的第二个元素，uniq -c 表示取唯一值，并计算重复次数，
 wc -l 表示计算总次数。
+
+2、more 180721_answerCall.log | grep "||POST:{" | awk -F 'CallStatus":"' '{print $2}' | awk -F '","' '{print $1}' 
+| awk  '{s[$1] += 1}END{ for(i in s){  print i, s[i] } }'
+
+这条命令表示分组列出180721_answerCall.log文件中CallStatus的值以及出现次数。
+awk  '{s[$1] += 1}END{ for(i in s){  print i, s[i] } }' 表示分组求和。
+completed 15300
+ringing 15820
+canceled 10
+no-answer 519
