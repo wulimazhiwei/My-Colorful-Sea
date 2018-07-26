@@ -1,0 +1,55 @@
+1、版本服务器上创建配置文件rsync.conf，内容如下
+
+# sample rsyncd.conf configuration file
+
+# GLOBAL OPTIONS
+#motd file=/etc/motd
+#log file=/var/log/rsyncd
+# for pid file, do not use /var/run/rsync.pid if
+# you are going to run rsync out of the init.d script.
+# The init.d script does its own pid file handling,
+# so omit the "pid file" line completely in that case.
+# pid file=/var/run/rsyncd.pid
+#syslog facility=daemon
+#socket options=
+
+# MODULE OPTIONS
+#要同步的项目设置
+[wordConnect]
+        comment = public archive
+        path = /home/admin/enServer/htdocs
+        use chroot = no
+#       max connections=10
+#       lock file = /var/lock/rsyncd
+# the default for read only is yes...
+        read only = yes
+        list = yes
+        uid = nobody
+        gid = nogroup
+#       exclude = 
+#       exclude from = 
+#       include =
+#       include from =
+        auth users = xn_rsync
+        secrets file = /etc/rsyncd.secrets
+        strict modes = yes
+#       hosts allow =
+#       hosts deny =
+        ignore errors = yes
+        ignore nonreadable = yes
+        transfer logging = no
+        log format = %t: host %h (%a) %o %f (%l bytes). Total %b bytes.
+        timeout = 600
+        refuse options = checksum dry-run
+        dont compress = *.gz *.tgz *.zip *.z *.rpm *.deb *.iso *.bz2 *.tbz
+        
+        
+2、创建密码文件，采用这种方式不能使用系统用户对客户端进行认证，所以需要创建一个密码文件，其格式为"username:password"，
+用户名可以和密码可以随便定义，最好不要和系统帐户一致，同时要把创建的密码文件权限设置为600    
+echo "xn_rsync:MianToken" > /etc/rsyncd.secrets
+chmod 600 /etc/rsyncd.secrets
+
+3、在需要同步版本的服务器创建密码文件/etc/rsyncd.pwd，内容为"MianToken".
+
+4、在需要同步版本的服务器执行同步操作
+rsync -a --delete --password-file=/etc/rsyncd.pwd --exclude "iosocr/storage/logs" xn_rsync@game1::wordConnect /home/admin/enServer/htdocs
