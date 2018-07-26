@@ -1,3 +1,5 @@
+参考文档：http://man.linuxde.net/rsync
+
 1、版本服务器上创建配置文件rsync.conf，内容如下
 
 # sample rsyncd.conf configuration file
