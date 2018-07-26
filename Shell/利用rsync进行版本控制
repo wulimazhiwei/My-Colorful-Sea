@@ -53,5 +53,6 @@ chmod 600 /etc/rsyncd.secrets
 
 3、在需要同步版本的服务器创建密码文件/etc/rsyncd.pwd，内容为"MianToken".
 
-4、在需要同步版本的服务器执行同步操作
+4、重启服务：service sshd stop/start
+5、在需要同步版本的服务器执行同步操作
 rsync -a --delete --password-file=/etc/rsyncd.pwd --exclude "iosocr/storage/logs" xn_rsync@game1::wordConnect /home/admin/enServer/htdocs
