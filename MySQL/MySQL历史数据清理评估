@@ -66,14 +66,54 @@ PARTITION pmax VALUES LESS THAN MAXVALUE
   ②rename表名，新表投入使用，旧表暂停
   rename table CREDIT to CREDIT_bak;
   rename table NEW_CREDIT to CREDIT;
+  
   ③备份旧表
-  mysqldump -utw_textfun -ptw_textfun@1407 tw_textfun CREDIT > CREDIT.sql
+  mysqldump -utw_textfun -ptw_textfun@1407 tw_textfun CREDIT_BAK > CREDIT.sql
   scp -r -P 14070 CREDIT.sql admin@45.79.68.224:/smsfile
   登录backup1查看：ssh admin@45.79.68.224 -p14070  / admin@1407#XN
   
-  ③将旧表中最近一周的数据填充至新表中，耗时估计5分钟。
+  ④创建存储过程，自动分区
+  drop procedure if exists CallFree_CREDIT_Set_Partition;
+  DELIMITER //
+  create procedure CallFree_CREDIT_Set_Partition()
+  begin
+    declare v_part VARCHAR(10);  
+    declare v_days INT;
+ 
+    declare exit handler for sqlexception rollback;
+    start TRANSACTION;
+
+    SELECT partition_description,partition_name into v_days,v_part from information_schema.partitions where table_schema = schema() and partition_name like 'p20%' and table_name='CREDIT' order by partition_description desc limit 1;
+ 
+    SET @v_newpart=DATE_FORMAT(FROM_DAYS(v_days), "%Y%m%d");
+    SET @v_newdays=v_days+1;
+ 
+    SET @usql=concat('ALTER TABLE CREDIT REORGANIZE PARTITION pmax INTO (PARTITION p',@v_newpart,' VALUES LESS THAN (',@v_newdays,'),partition pmax VALUES LESS THAN MAXVALUE);');
+ 
+    PREPARE stmt2 FROM @usql;
+    EXECUTE stmt2;
+    DEALLOCATE PREPARE stmt2;
+    COMMIT;
+  end
+  //
+  DELIMITER ;
+ 
+  ⑤创建计划任务，定时执行分区
+  select now();
+  //SHOW VARIABLES LIKE 'event_scheduler';
+  //set global event_scheduler =1;
+
+  DROP EVENT IF EXISTS e_CallFree_CREDIT_Set_Partition;
+  CREATE EVENT e_CallFree_CREDIT_Set_Partition 
+  ON SCHEDULE EVERY 1 day STARTS TIMESTAMP '2018-08-03 09:07:00'  
+  ON COMPLETION PRESERVE 
+  DO 
+	  call CallFree_CREDIT_Set_Partition();
+  
+  ⑥将旧表中最近一周的数据填充至新表中，耗时估计5分钟。
   insert into CREDIT select * from CREDIT_BAK where create_date > '2018-07-30 00:00:00';
   #测试：insert into NEW_CREDIT select * from CREDIT where create_date > '2018-01-13 00:00:00';
   #结果：72w条数据用时3 min 2.10 sec
-  ④陆续将最近5个月的数据（月700w条数据）导入至新表中。耗时无法预估。
-  ⑤删除旧表。
+  
+  ⑦陆续将最近5个月的数据（月700w条数据）导入至新表中。耗时无法预估。
+  ⑧删除旧表。
