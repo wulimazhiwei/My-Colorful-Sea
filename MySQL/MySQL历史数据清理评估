@@ -23,4 +23,47 @@
 
 
 四、具体实施步骤
-  ①
+  ①创建新表，按天建立分区
+  CREATE TABLE `NEW_CREDIT` (
+  `transaction_id` varchar(30) NOT NULL,
+  `area` varchar(6) DEFAULT NULL,
+  `num` varchar(15) DEFAULT NULL,
+  `product_id` varchar(60) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `purchase_date` datetime DEFAULT NULL,
+  `create_date` datetime NOT NULL,
+  `price` float(6,3) DEFAULT NULL,
+  `md5` varchar(130) NOT NULL,
+  `test` tinyint(2) DEFAULT NULL,
+  `status` smallint(6) DEFAULT NULL,
+  `gift` float(5,2) DEFAULT '0.00',
+  `packageName` varchar(80) DEFAULT NULL,
+  `token` varchar(200) DEFAULT NULL,
+  `tokenmd5` varchar(35) DEFAULT NULL,
+  `type` int(3) DEFAULT NULL,
+  `uid` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`md5`,`create_date`,`tokenmd5`),
+  KEY `credit_uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 
+PARTITION BY RANGE (TO_DAYS(create_date))
+(partition min values less than (TO_DAYS('2018-07-25')),
+partition p20180725 values less than (TO_DAYS('2018-07-26')),
+partition p20180726 values less than (TO_DAYS('2018-07-27')),
+partition p20180727 values less than (TO_DAYS('2018-07-28')),
+partition p20180728 values less than (TO_DAYS('2018-07-29')),
+partition p20180729 values less than (TO_DAYS('2018-07-30')),
+partition p20180730 values less than (TO_DAYS('2018-07-31')),
+partition p20180731 values less than (TO_DAYS('2018-08-01')),
+partition p20180801 values less than (TO_DAYS('2018-08-02')),
+partition p20180802 values less than (TO_DAYS('2018-08-03')),
+partition p20180803 values less than (TO_DAYS('2018-08-04')),
+partition p20180804 values less than (TO_DAYS('2018-08-05')),
+partition p20180805 values less than (TO_DAYS('2018-08-06')),
+partition p20180806 values less than (TO_DAYS('2018-08-07')),
+PARTITION pmax VALUES LESS THAN MAXVALUE
+);
+
+  ②rename表名（瞬间完成，耗时不计），将新表投入使用，旧表暂停。并备份旧表。
+  ③将旧表中最近一周的数据（约62w条数据）填充至新表中，耗时估计5分钟。
+  ④陆续将最近5个月的数据（月700w条数据）导入至新表中。耗时无法预估。
+  ⑤删除旧表。
