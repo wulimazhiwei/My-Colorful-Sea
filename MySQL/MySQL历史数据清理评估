@@ -116,4 +116,4 @@ PARTITION pmax VALUES LESS THAN MAXVALUE
   #结果：72w条数据用时3 min 2.10 sec
   
   ⑦陆续将最近5个月的数据（月700w条数据）导入至新表中。耗时无法预估。
-  ⑧删除旧表。
+  ⑧删除旧表。 
