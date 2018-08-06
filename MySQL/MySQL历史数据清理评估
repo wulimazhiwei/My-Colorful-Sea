@@ -76,7 +76,7 @@ PARTITION pmax VALUES LESS THAN MAXVALUE
   rename table NEW_CREDIT to CREDIT;
   
   ③备份旧表
-  mysqldump -utw_textfun -ptw_textfun@1407 tw_textfun CREDIT_BAK > CREDIT.sql
+  mysqldump -utw_textfun -ptw_textfun@1407 tw_textfun CREDIT_bak > CREDIT.sql
   scp -r -P 14070 CREDIT.sql admin@45.79.68.224:/smsfile
   登录backup1查看：ssh admin@45.79.68.224 -p14070  / admin@1407#XN
   
@@ -119,7 +119,7 @@ PARTITION pmax VALUES LESS THAN MAXVALUE
 	  call CallFree_CREDIT_Set_Partition();
   
   ⑥将旧表中最近一周的数据填充至新表中，耗时估计5分钟。
-  insert into CREDIT select * from CREDIT_BAK where create_date > '2018-07-30 00:00:00';
+  insert into CREDIT select * from CREDIT_bak where create_date > '2018-07-30 00:00:00';
   #测试：insert into NEW_CREDIT select * from CREDIT where create_date > '2018-01-13 00:00:00';
   #结果：72w条数据用时3 min 2.10 sec
   
