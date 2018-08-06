@@ -120,6 +120,7 @@ PARTITION pmax VALUES LESS THAN MAXVALUE
   
   ⑥将旧表中最近一周的数据填充至新表中，耗时估计5分钟。
   insert into CREDIT select * from CREDIT_bak where create_date > '2018-07-30 00:00:00';
+  #实际：Query OK, 638137 rows affected, 65535 warnings (1 min 37.30 sec)
   #测试：insert into NEW_CREDIT select * from CREDIT where create_date > '2018-01-13 00:00:00';
   #结果：72w条数据用时3 min 2.10 sec
   
