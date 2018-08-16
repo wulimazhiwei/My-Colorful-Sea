@@ -149,9 +149,11 @@ apt-get install php-curl
 
 ----------  Keyinfo Crontab ----------------
 mkdir /srv
+mkfs.ext4 /dev/sdc 
+mount /dev/sdc /srv
+
 vi /etc/fstab
 /dev/sdc /srv ext4 noatime,errors=remount-ro  0 1
-mount /srv
 
 ----------  install mysql ----------------
 apt-get install percona-xtradb-cluster-5.6
