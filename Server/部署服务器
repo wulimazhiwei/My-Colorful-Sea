@@ -85,7 +85,7 @@ sudo update-rc.d -f apache2 remove
 ---------- Rsync ----------------
 4.  rsync
 
-scp root@app201:/home/admin/enServer.tar /home/admin/
+scp -P 14070 root@app201:/home/admin/enServer.tar /home/admin/
 tar -xvf  /home/admin/enServer.tar
 chown -R admin:admin /home/admin/enServer
 
