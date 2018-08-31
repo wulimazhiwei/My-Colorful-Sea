@@ -1,0 +1,7 @@
+1、sudo -s
+2、debugfs
+3、open /dev/sda1  //打开被删除文件所在分区
+4、ls -d /home/mazhiwei/Desktop  //列出被删除的文件，-d表示被删除文件所在的目录，显示有<>尖括号的就是我们要找的文件Inode 号，例如<10747954>
+5、q  //q可以退出当前模式
+6、 logdump -i 10747954 //得出block id
+7、dd if=/dev/mapper/rootVG-root of=/tmp/test.txt.bak bs=4096 count=1 skip=block id
