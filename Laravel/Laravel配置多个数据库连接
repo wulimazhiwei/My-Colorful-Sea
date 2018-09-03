@@ -60,3 +60,7 @@ MAIL_ENCRYPTION=ssl
             'prefix'    => '',
             'strict'    => false,
          ],
+
+3、使用
+$res = DB::connection('ios_callplus_test');
+$result = $res->select($sql);
