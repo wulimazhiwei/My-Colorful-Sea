@@ -6,3 +6,11 @@
   mysql -udebian-sys-maint -pxxxx
 ④进入mysql之后，设置自己的密码
 set password for 'root'@'localhost'=PASSWORD('123456');
+
+
+2、跨库查询
+比如说Android CallFree和TextFun两个应用的数据库，在终端界面可以直接通过root用户登录数据库，然后跨库查询，但是在PHP里面使用pdo链接数据库，
+可以建立多个数据库链接，但是无法联表查询。要想联表查询，需要授予当前数据库用户访问另外一个数据库的权限，然后就可以跨库联表查询。
+sql:select a.sid from tw_textfun.SENDSMS a,andr_textfun.SENDSMS b where a.Fnum = b.Fnum and a.Tnum = b.Tnum group by a.sid;
+
+GRANT all privileges on andr_textfun.* to tw_textfun@'%' identified by 'tw_textfun@1407' with grant option;
