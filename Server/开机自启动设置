@@ -1,0 +1,19 @@
+#https://blog.csdn.net/dahuzix/article/details/80785691
+
+1、ln -fs /lib/systemd/system/rc-local.service /etc/systemd/system/rc-local.service
+
+2、vi /etc/systemd/system/rc-local.service 
+添加
+[Install]  
+WantedBy=multi-user.target  
+Alias=rc-local.service  
+
+3、vi /etc/rc.local
+
+#!/bin/bash  
+
+echo "test rc " > /var/test.log
+su root -l -c "sh /home/admin/apachec/ctrlapache.sh start"
+exit 0
+
+4、chmod 755 /etc/rc.local  
