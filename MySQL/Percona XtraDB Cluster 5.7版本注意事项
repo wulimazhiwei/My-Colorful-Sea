@@ -1,0 +1,13 @@
+#https://www.percona.com/blog/2017/02/24/battle-for-synchronous-replication-in-mysql-galera-vs-group-replication/
+
+对于多主复制，其中一个要求是所有表必须是InnoDB并且具有主键。现在，在Group Replication和 Percona XtraDB Cluster 5.7中默认强制执行此要求。
+在Percona XtraDB Cluster 5.7（或其他Galera实现）之前，没有这样的强制限制。
+
+1、必须要有主键，解决办法是加主键
+ERROR 1105 (HY000): Percona-XtraDB-Cluster prohibits use of DML command on a table (test.nopk) without an explicit primary key with pxc_strict_mode = ENFORCING or MASTER
+
+2、必须InnoDB引擎，解决办法是修改为InnoDB引擎
+ERROR 1105 (HY000): Percona-XtraDB-Cluster prohibits use of DML command on a table (test.m1) that resides in non-transactional storage engine with pxc_strict_mode = ENFORCING or MASTER
+
+3、以上两种情况的避免方法：取消强制模式
+set global pxc_strict_mode=0;
