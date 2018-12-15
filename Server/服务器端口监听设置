@@ -1,0 +1,58 @@
+1、http监听80端口或者自定义7080的端口
+
+/home/admin/apachec/conf/httpd.conf配置文件中：
+
+Listen 7080 #80
+DocumentRoot "/home/admin/apachec/htdocs"
+<Directory "/home/admin/apachec/htdocs">
+    Options  FollowSymLinks
+    AllowOverride None
+    Require all granted
+</Directory>
+LoadModule php7_module /usr/lib/apache2/modules/libphp7.2.so
+<FilesMatch ".+\.ph(p[3457]?|t|tml)$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+<FilesMatch ".+\.phps$">
+    SetHandler application/x-httpd-php-source
+    Require all denied
+</FilesMatch>
+<FilesMatch "^\.ph(p[3457]?|t|tml|ps)$">
+    Require all denied
+</FilesMatch>
+<IfModule mod_userdir.c>
+    <Directory /home/*/public_html>
+        php_admin_flag engine Off
+    </Directory>
+</IfModule>
+
+
+2、https监听443端口
+
+/home/admin/apachec/conf/extra/httpd-ssl.conf配置文件中：
+
+Listen 443
+<VirtualHost _default_:443>
+
+#   General setup for the virtual host
+DocumentRoot "/home/admin/apachec/htdocs"
+ServerName api.cocomobi.com:443
+ServerAdmin you@example.com
+ErrorLog "/home/admin/apachec/logs/error_log"
+TransferLog "/home/admin/apachec/logs/access_log"
+
+#   SSL Engine Switch:
+#   Enable/Disable SSL for this virtual host.
+SSLEngine on
+
+SSLCertificateFile    /home/admin/apachec/htdocs/ssl/2_api.cocomobi.com.crt
+SSLCertificateKeyFile /home/admin/apachec/htdocs/ssl/mavl.key
+
+<FilesMatch "\.(cgi|shtml|phtml|php)$">
+    SSLOptions +StdEnvVars
+</FilesMatch>
+<Directory "/home/admin/apachec/cgi-bin">
+    SSLOptions +StdEnvVars
+</Directory>
+
+</VirtualHost>
