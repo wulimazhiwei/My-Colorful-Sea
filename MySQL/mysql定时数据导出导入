@@ -1,0 +1,47 @@
+#!/bin/bash
+
+MNTH=`date +'%y%m%d'`
+EXPORTPERIOD=`date +'%Y-%m-%d'`
+REMOTELOG='/home/admin/'
+LOCALLOG='/home/admin/export_data/logs/'
+
+APPLIST=(
+    "andr_textfun"
+    #"tw_textfun"
+)
+
+declare -A tableArray
+tableArray=(
+	#['CR_USERS']='date_created'
+	#['CR_CALL_HISTORY']='StartTime'
+	#['SENDSMS']='date_created'
+	['FEE_PRODUCT']=''
+)
+
+#${APPLIST[@]}  #取数组所有值
+for APP in ${APPLIST[@]}
+do
+    #${!tableArray[*]}   #取关联数组所有键
+    for key in ${!tableArray[*]}
+    do
+        WHERE=''
+        if [ "${tableArray[$key]}"x != ""x ]
+        then
+           WHERE=" --where=""'""${tableArray[$key]}"" >= "'"'"${EXPORTPERIOD}"'"'"'"
+           echo ${WHERE}
+        fi
+
+        FILE="${MNTH}""_""${APP}""_""${key}"".sql"
+        #echo ${FILE}
+        DUMP="mysqldump -u${APP} -p${APP}"@1407" ${APP} ${key} ${WHERE} > "${FILE}""
+        #echo ${DUMP}
+
+        #生产sql文件，并拷贝到测试环境，删除远程sql文件
+        /usr/bin/rsh admin@45.33.125.43 -p 14070 -l admin "cd ${REMOTELOG} ; ${DUMP};"
+        scp -P 14070 admin@45.33.125.43:${REMOTELOG}${FILE} ${LOCALLOG}
+
+        /usr/bin/rsh admin@45.33.125.43 -p 14070 -l admin "cd /home/admin/ ; rm ${FILE};"
+
+        mysql -u${APP} -p${APP}"@1407" -D${APP} <<EOF source ${LOCALLOG}${FILE};EOF
+    done
+done
