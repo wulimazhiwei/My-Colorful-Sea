@@ -1,13 +1,48 @@
+1、使用select into outfile时报ERROR 1045 (28000)
+是因为没有把file权限赋给用户。
+mysql>select * from NUMBER_SELL  where create_date between '2018-12-20 01:50:54' and '2018-12-21 01:00:00' into outfile '/home/admin/181221_andr_textfun_NUMBER_SELL.sql';
+ERROR 1045 (28000): Access denied for user 'andr_textfun'@'%' (using password: YES)
+
+执行赋予file权限：
+mysql>grant file on *.* to andr_textfun;
+mysql>flush privileges;
+即可。
+执行。
+
+但又接着报错--secure-file-priv
+mysql>select * from NUMBER_SELL  where create_date between '2018-12-20 01:50:54' and '2018-12-21 01:00:00' into outfile '/home/admin/181221_andr_textfun_NUMBER_SELL.sql';
+The MySQL server is running with the --secure-file-priv option so it cannot execute this statement
+
+这mysql设置的权限，可以使用show variables like '%secure%';查看 secure-file-priv 当前的值是什么
+mysql> show variables like '%secure%';
++--------------------------+-----------------------+
+| Variable_name            | Value                 |
++--------------------------+-----------------------+
+| require_secure_transport | OFF                   |
+| secure_auth              | ON                    |
+| secure_file_priv         | /var/lib/mysql-files/ |
++--------------------------+-----------------------+
+
+导出的数据必须是这个值的指定路径才可以导出。。。。
+mysql> select * from NUMBER_SELL  where create_date between '2018-12-20 01:50:54' and '2018-12-21 01:00:00' into outfile '/var/lib/mysql-files/181221_andr_textfun_NUMBER_SELL.sql';
+Query OK, 17 rows affected (0.01 sec)
+
+执行成功，去/var/lib/mysql-files/下查找文件。
+
+
 #!/bin/bash
 
 MNTH=`date +'%y%m%d'`
-EXPORTPERIOD=`date +'%Y-%m-%d'`
-REMOTELOG='/home/admin/'
+#EXPORTPERIOD=`date +'%Y-%m-%d'`
+STAET='2018-12-20 01:50:54'
+END='2018-12-21 01:00:00'
+REMOTELOG='/var/lib/mysql-files/'
 LOCALLOG='/home/admin/export_data/logs/'
 
+declare -A APPLIST
 APPLIST=(
-    "andr_textfun"
-    #"tw_textfun"
+    ['andr_textfun']='45.79.14.148'
+    #['tw_textfun']='45.33.125.43'
 )
 
 declare -A tableArray
@@ -15,33 +50,37 @@ tableArray=(
 	#['CR_USERS']='date_created'
 	#['CR_CALL_HISTORY']='StartTime'
 	#['SENDSMS']='date_created'
-	['FEE_PRODUCT']=''
+	['NUMBER_SELL']='create_date'
 )
 
-#${APPLIST[@]}  #取数组所有值
-for APP in ${APPLIST[@]}
+#${APPLIST[*]}  #取关联数组所有键
+for APP in ${!APPLIST[*]}
 do
-    #${!tableArray[*]}   #取关联数组所有键
-    for key in ${!tableArray[*]}
+    for table in ${!tableArray[*]}
     do
         WHERE=''
-        if [ "${tableArray[$key]}"x != ""x ]
+        if [ "${tableArray[$table]}"x != ""x ]
         then
-           WHERE=" --where=""'""${tableArray[$key]}"" >= "'"'"${EXPORTPERIOD}"'"'"'"
+           #WHERE=" --where=""'""${tableArray[$table]}"" between "'"'"${STAET}"'"'" and "'"'${END}'"'"'"
+           WHERE=" where ""${tableArray[$table]}"" between ""'""${STAET}""'"" and ""'""${END}""'"
            echo ${WHERE}
+
         fi
 
-        FILE="${MNTH}""_""${APP}""_""${key}"".sql"
+        FILE="${MNTH}""_""${APP}""_""${table}"".sql"
         #echo ${FILE}
-        DUMP="mysqldump -u${APP} -p${APP}"@1407" ${APP} ${key} ${WHERE} > "${FILE}""
-        #echo ${DUMP}
+        #DUMP="mysqldump -u${APP} -p${APP}"@1407" ${APP} ${table} ${WHERE} --single-transaction > "${FILE}""
 
+        EEE='"'"select * from ${table} ${WHERE} into outfile ""'"${FILE}"';"'"'
+        DUMP="mysql -u${APP} -p${APP}"@1407" -D${APP} -e "${EEE}
+        echo "${DUMP}"
+        exit
         #生产sql文件，并拷贝到测试环境，删除远程sql文件
-        /usr/bin/rsh admin@45.33.125.43 -p 14070 -l admin "cd ${REMOTELOG} ; ${DUMP};"
-        scp -P 14070 admin@45.33.125.43:${REMOTELOG}${FILE} ${LOCALLOG}
+        #/usr/bin/rsh admin@"${APPLIST[$APP]}" -p 14070 -l admin "cd ${REMOTELOG} ; ${DUMP};"
+        #scp -P 14070 admin@"${APPLIST[$APP]}":${REMOTELOG}${FILE} ${LOCALLOG}
 
-        /usr/bin/rsh admin@45.33.125.43 -p 14070 -l admin "cd /home/admin/ ; rm ${FILE};"
+        #/usr/bin/rsh admin@"${APPLIST[$APP]}" -p 14070 -l admin "cd ${REMOTELOG} ; rm ${FILE};"
 
-        mysql -u${APP} -p${APP}"@1407" -D${APP} <<EOF source ${LOCALLOG}${FILE};EOF
+        #mysql -u${APP} -p${APP}"@1407" -D${APP} -e "source ${LOCALLOG}${FILE};"
     done
 done
