@@ -1,2 +1,6 @@
-1、查看定时任务，root权限
+1、查看mysql定时任务功能是否开启
+SHOW VARIABLES LIKE 'event_scheduler';
+set global event_scheduler =1;
+
+2、查看定时任务，root权限
 select * from mysql.event where db='andr_textfun';
