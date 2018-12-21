@@ -11,3 +11,12 @@ ERROR 1105 (HY000): Percona-XtraDB-Cluster prohibits use of DML command on a tab
 
 3、以上两种情况的避免方法：取消强制模式
 set global pxc_strict_mode=0;
+
+
+当数据库重启时，需要进行以下设置：root权限
+1、开启mysql定时任务，默认不开启
+SHOW VARIABLES LIKE 'event_scheduler';
+set global event_scheduler =1;
+
+2、修改sql_mode，影响定时分区任务执行
+set global sql_mode = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
