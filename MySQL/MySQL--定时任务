@@ -1,0 +1,2 @@
+1、查看定时任务，root权限
+select * from mysql.event where db='andr_textfun';
