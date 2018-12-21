@@ -41,3 +41,9 @@ Master作为客户端，要实现无密码公钥认证，连接到服务器Salve
 后再用私钥解密，并将解密数回传给Salve，Salve确认解密数无误之后就允许Master进行连接了。这就是一个公钥认证过程，期间不需要手工输入密码，重要
 的过程是将Master上产生的公钥复制到Salve上。
 
+
+3、在服务器添加完公钥后登录报错：sign_and_send_pubkey: signing failed: agent refused operation
+
+eval "$(ssh-agent -s)"
+ssh-add
+
