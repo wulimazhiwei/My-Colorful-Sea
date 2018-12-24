@@ -1,4 +1,4 @@
-通过PHP的mail函数发邮件时报出了错误：501 mail from address must be same as authorization user
+1、通过PHP的mail函数发邮件时报出了错误：501 mail from address must be same as authorization user
 
 查看vi /etc/ssmtp/ssmtp.conf
 
@@ -12,3 +12,15 @@ UseTLS=YES
 
 如果发邮件的from和AuthUser不一致，则会报出该错误。
 https://wiki.archlinux.org/index.php/SSMTP
+
+
+2、unable to qualify my own domain name (app301) -- using short name
+
+vi /etc/hosts
+
+127.0.0.1 localhost
+
+192.168.8.66 hostname hostname.
+
+service sendmail stop
+service sendmail start
