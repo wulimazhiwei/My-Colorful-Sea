@@ -14,7 +14,7 @@ UseTLS=YES
 https://wiki.archlinux.org/index.php/SSMTP
 
 
-2、
+2、新安装sendmail功能，但无法发邮件，报以下错误
  app301 sendmail[23700]: My unqualified host name (app301) unknown; sleeping for retry
  app301 sm-mta[23675]: unable to qualify my own domain name (app301) -- using short name
 竟然是无法解析app301，有点意思，直接去ping app301自然是没问题，突然想到好像FQDN里面规定域名必须用"."结尾，
