@@ -14,13 +14,16 @@ UseTLS=YES
 https://wiki.archlinux.org/index.php/SSMTP
 
 
-2、unable to qualify my own domain name (app301) -- using short name
-
+2、
+ app301 sendmail[23700]: My unqualified host name (app301) unknown; sleeping for retry
+ app301 sm-mta[23675]: unable to qualify my own domain name (app301) -- using short name
+竟然是无法解析app301，有点意思，直接去ping app301自然是没问题，突然想到好像FQDN里面规定域名必须用"."结尾，
+难道是hosts里面少了一个"."，尝试修改hosts文件：
 vi /etc/hosts
 
-127.0.0.1 localhost
+127.0.0.1 localhost app301
 
-192.168.8.66 hostname hostname.
+192.168.8.66 app301 app301.
 
 service sendmail stop
 service sendmail start
