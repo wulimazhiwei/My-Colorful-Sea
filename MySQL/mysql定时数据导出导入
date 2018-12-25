@@ -23,7 +23,7 @@ mysql> show variables like '%secure%';
 | secure_file_priv         | /var/lib/mysql-files/ |
 +--------------------------+-----------------------+
 
-导出的数据必须是这个值的指定路径才可以导出。。。。
+导出的数据必须是这个值的指定路径才可以导出。。。。使用load data infile导入数据时也需要指定此路径。。。
 mysql> select * from NUMBER_SELL  where create_date between '2018-12-20 01:50:54' and '2018-12-21 01:00:00' into outfile '/var/lib/mysql-files/181221_andr_textfun_NUMBER_SELL.sql';
 Query OK, 17 rows affected (0.01 sec)
 
