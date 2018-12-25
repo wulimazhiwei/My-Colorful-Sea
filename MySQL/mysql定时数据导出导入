@@ -29,6 +29,13 @@ Query OK, 17 rows affected (0.01 sec)
 
 执行成功，去/var/lib/mysql-files/下查找文件。
 
+2、使用load data infile导入数据
+使用load data infile导入数据时也需要指定此路径secure_file_priv
+replace和ignore关键词控制对现有的唯一键记录的重复的处理。
+如果你指定replace，新行将代替有相同的唯一键值的现有行。
+如果你指定ignore，跳过有唯一键的现有行的重复行的输入。
+
+load data infile '/home/admin/export_data/logs/181225_andr_textfun_NUMBER_SELL.sql' ignore into table NUMBER_SELL;
 
 #!/bin/bash
 
