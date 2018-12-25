@@ -37,57 +37,5 @@ replace和ignore关键词控制对现有的唯一键记录的重复的处理。
 
 load data infile '/home/admin/export_data/logs/181225_andr_textfun_NUMBER_SELL.sql' ignore into table NUMBER_SELL;
 
-#!/bin/bash
-
-MNTH=`date +'%y%m%d'`
-#EXPORTPERIOD=`date +'%Y-%m-%d'`
-STAET='2018-12-20 01:50:54'
-END='2018-12-21 01:00:00'
-REMOTELOG='/var/lib/mysql-files/'
-LOCALLOG='/home/admin/export_data/logs/'
-
-declare -A APPLIST
-APPLIST=(
-    ['andr_textfun']='45.79.14.148'
-    #['tw_textfun']='45.33.125.43'
-)
-
-declare -A tableArray
-tableArray=(
-	#['CR_USERS']='date_created'
-	#['CR_CALL_HISTORY']='StartTime'
-	#['SENDSMS']='date_created'
-	['NUMBER_SELL']='create_date'
-)
-
-#${APPLIST[*]}  #取关联数组所有键
-for APP in ${!APPLIST[*]}
-do
-    for table in ${!tableArray[*]}
-    do
-        WHERE=''
-        if [ "${tableArray[$table]}"x != ""x ]
-        then
-           #WHERE=" --where=""'""${tableArray[$table]}"" between "'"'"${STAET}"'"'" and "'"'${END}'"'"'"
-           WHERE=" where ""${tableArray[$table]}"" between ""'""${STAET}""'"" and ""'""${END}""'"
-           echo ${WHERE}
-
-        fi
-
-        FILE="${MNTH}""_""${APP}""_""${table}"".sql"
-        #echo ${FILE}
-        #DUMP="mysqldump -u${APP} -p${APP}"@1407" ${APP} ${table} ${WHERE} --single-transaction > "${FILE}""
-
-        EEE='"'"select * from ${table} ${WHERE} into outfile ""'"${FILE}"';"'"'
-        DUMP="mysql -u${APP} -p${APP}"@1407" -D${APP} -e "${EEE}
-        echo "${DUMP}"
-        exit
-        #生产sql文件，并拷贝到测试环境，删除远程sql文件
-        #/usr/bin/rsh admin@"${APPLIST[$APP]}" -p 14070 -l admin "cd ${REMOTELOG} ; ${DUMP};"
-        #scp -P 14070 admin@"${APPLIST[$APP]}":${REMOTELOG}${FILE} ${LOCALLOG}
-
-        #/usr/bin/rsh admin@"${APPLIST[$APP]}" -p 14070 -l admin "cd ${REMOTELOG} ; rm ${FILE};"
-
-        #mysql -u${APP} -p${APP}"@1407" -D${APP} -e "source ${LOCALLOG}${FILE};"
-    done
-done
+3、实践
+https://github.com/wulimazhiwei/My-Colorful-Sea/blob/master/MySQL/Practice/export_data.txt
