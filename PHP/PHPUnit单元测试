@@ -18,7 +18,8 @@ composer require --dev phpunit/dbunit
 
 3、说明
 A.通过composer安装的phpunit组件将会存在于vendor/phpunit/phpunit
-B.PHPUnit 编写测试的基本惯例与步骤：
+B:src中存放真实的服务类，tests存放所有的测试类
+C.PHPUnit 编写测试的基本惯例与步骤：
   a.针对类 Class 的测试写在类 ClassTest中。
   b.ClassTest（通常）继承自 PHPUnit_Framework_TestCase(PHPUnit\Framework\TestCase，需要引用vendor/autoload.php)。
   c.测试都是命名为 test* 的公用方法。也可以在方法的文档注释块(docblock)中使用 @test 标注将其标记为测试方法。
