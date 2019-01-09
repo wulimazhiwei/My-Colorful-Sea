@@ -8,3 +8,18 @@
 运行：sudo apt-get install phpunit
 运行：phpunit --version  输出以下信息说明安装成功
 PHPUnit 5.1.3 by Sebastian Bergmann and contributors.
+
+或者composer
+composer require --dev phpunit/phpunit ^6.5
+可选组件：PHP_Invoker，一个工具类，可以用带有超时限制的方式调用可调用内容。当需要在严格模式下保证测试的超时限制时，这个组件包是必须的。
+composer require --dev phpunit/php-invoker
+可选组件：DbUnit，移植到 PHP/PHPUnit 上的 DbUnit 用于提供对数据库交互测试的支持。
+composer require --dev phpunit/dbunit
+
+3、说明
+A.通过composer安装的phpunit组件将会存在于vendor/phpunit/phpunit
+B.PHPUnit 编写测试的基本惯例与步骤：
+  a.针对类 Class 的测试写在类 ClassTest中。
+  b.ClassTest（通常）继承自 PHPUnit_Framework_TestCase(PHPUnit\Framework\TestCase，需要引用vendor/autoload.php)。
+  c.测试都是命名为 test* 的公用方法。也可以在方法的文档注释块(docblock)中使用 @test 标注将其标记为测试方法。
+  d.在测试方法内，类似于 assertEquals()（参见 附录 A）这样的断言方法用来对实际值与预期值的匹配做出断言。
