@@ -8,7 +8,7 @@ Remote Dictionary Server,是一个高性能的key-value数据库。
 丰富的特性 – Redis还支持 publish/subscribe, 通知, key 过期等等特性。
 
 2、memcached
-Memcached是一种基于内存的key-value存储，用来存储小块的任意数据（字符串、对象）。这些数据可以是数据库调用、API调用或者是页面渲染的结果。
+Memcached，分布式内存对象缓存系统。是一种基于内存的key-value存储，用来存储小块的任意数据（字符串、对象）。
 
 二者区别：
 1、Redis和Memcache都是将数据存放在内存中，都是内存数据库。不过memcache还可用于缓存其他东西，例如图片、视频等等；
@@ -29,3 +29,7 @@ Memcached是一种基于内存的key-value存储，用来存储小块的任意�
 
 9、应用场景不一样：Redis除了作为NoSQL数据库使用外，还能用做消息队列、数据堆栈和数据缓存等；
   Memcached适合于缓存SQL语句、数据集、用户临时性数据、延迟查询数据和session等。
+
+3、Mongodb
+MongoDB 是一个基于分布式文件存储的数据库。由 C++ 语言编写。旨在为 WEB 应用提供可扩展的高性能数据存储解决方案。
+MongoDB 是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。
