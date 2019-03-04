@@ -1,0 +1,91 @@
+1.查看数据库的文件数数量级别 
+# find /srv/percona-xtradb-cluster -name "*.ibd" | wc -l 
+2.修改数据库的最大打开文件数目限制
+2.1 找到进程编号 ps -ef | grep mysql
+mysql    22764     1  0 Mar01 ?        00:00:00 /bin/sh /usr/bin/mysqld_safe
+mysql    23381 22764  2 Mar01 ?        01:39:03 /usr/sbin/mysqld --basedir=/usr --datadir=/srv/percona-xtradb-cluster --plugin-dir=/usr/lib/mysql/plugin --wsrep-provider=/usr/lib/galera3/libgalera_smm.so --wsrep-provider=/usr/lib/libgalera_smm.so --log-error=/var/log/mysqld.log --pid-file=/var/run/mysqld/mysqld.pid --socket=/var/run/mysqld/mysqld.sock --wsrep_start_position=00000000-0000-0000-0000-000000000000:-1
+root     27038 26997  0 02:24 pts/0    00:00:00 grep --color=auto mysql
+
+进程编号为23381
+2.2 查看当前数据库的最大打开文件数目限制
+cat /proc/23381/limits
+Limit                     Soft Limit           Hard Limit           Units     
+Max cpu time              unlimited            unlimited            seconds   
+Max file size             unlimited            unlimited            bytes     
+Max data size             unlimited            unlimited            bytes     
+Max stack size            8388608              unlimited            bytes     
+Max core file size        0                    unlimited            bytes     
+Max resident set          unlimited            unlimited            bytes     
+Max processes             15734                15734                processes 
+Max open files            5000                 5000                 files     
+Max locked memory         65536                65536                bytes     
+Max address space         unlimited            unlimited            bytes     
+Max file locks            unlimited            unlimited            locks     
+Max pending signals       15734                15734                signals   
+Max msgqueue size         819200               819200               bytes     
+Max nice priority         0                    0                    
+Max realtime priority     0                    0                    
+Max realtime timeout      unlimited            unlimited            us        
+
+Max open files 最大打开数为5000
+2.3 在线修改 prlimit -n200000 -p23381
+2.4 持久化修改
+修改文件:vi /etc/security/limits.conf
+mysql hard nofile 2000000
+mysql soft nofile 2000000
+
+案例：
+告警处理过程总结：
+1. 发现告警，检查告警属实，发现数据库无法自动启动成功
+2. 从Loadbalance上关闭app301业务，屏蔽业务影响
+3. 开始检察原因，恢复数据库
+
+step1. 301 failed to start, 发现因为无法同其它节点同步导致数据库无法启动
+step2. 检查302为301的同步donor，发现错误的根本原因
+--------------- innobackup.backup.log (START) --------------------
+InnoDB: Operating system error number 24 in a file operation.
+InnoDB: Error number 24 means 'Too many open files'
+--------------- innobackup.backup.log (END) ----------------------
+
+step3. 在302上查看mysql数据库进程的系统级资源限制
+ps -ef | grep mysql
+mysql    13189 12632  2 Jan18 ? .......       
+
+:/proc/13189# cat limits
+Limit                     Soft Limit           Hard Limit           Units     
+Max cpu time              unlimited            unlimited            seconds   
+Max file size             unlimited            unlimited            bytes     
+Max data size             unlimited            unlimited            bytes     
+Max stack size            8388608              unlimited            bytes     
+Max core file size        0                    unlimited            bytes     
+Max resident set          unlimited            unlimited            bytes     
+Max processes             31665                31665                processes 
+Max open files            5000                 5000                 files     
+Max locked memory         16777216             16777216             bytes     
+Max address space         unlimited            unlimited            bytes     
+Max file locks            unlimited            unlimited            locks     
+Max pending signals       31665                31665                signals   
+Max msgqueue size         819200               819200               bytes     
+Max nice priority         0                    0                    
+Max realtime priority     0                    0                    
+Max realtime timeout      unlimited            unlimited            us  
+
+step4： 在线修改这个进程最大打卡文件数限制
+root@302:/proc/13189# prlimit -n200000 -p13189
+root@302:/proc/13189# cat limits 
+Max open files            200000               200000               files     
+
+step5： 启动成功，数据进行全量复制，
+
+step6: 后继后台优化
+1.查看所有数据库的文件数数量级别 
+# find /srv/percona-xtradb-cluster -name "*.ibd" | wc -l 
+2.修改所有sms数据库的最大打开文件数目限制
+2.1 找到进程编号 ps -ef | grep mysql
+2.2 在线修改 prlimit -n200000 -p{pid}
+2.3 持久化修改
+修改文件:/etc/security/limits.conf
+mysql hard nofile 2000000
+mysql soft nofile 2000000
+
+4. 恢复业务
