@@ -20,12 +20,12 @@ APPLIST=(
 
 declare -A tableArray
 tableArray=(
-	['CR_USERS']='date_created'
-	['CR_CALL_HISTORY']='StartTime'
-	['SENDSMS']='date_created'
-	['CREDIT']='create_date'
-	['NUMBER_SELL']='create_date'
-	['CHECKIN_HISTORY']='date_created'
+   ['CR_USERS']='date_created'
+   ['CR_CALL_HISTORY']='StartTime'
+   ['SENDSMS']='date_created'
+   ['CREDIT']='create_date'
+   ['NUMBER_SELL']='create_date'
+   ['CHECKIN_HISTORY']='date_created'
    ['CHECK_IN']='local_date'
    ['FORTUNE_WHEEL']='date_created'
    ['INVITE']='create_date'
