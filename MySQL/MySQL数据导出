@@ -1,2 +1,0 @@
-1、按日期导出部分数据
-mysqldump -utw_textfun -ptw_textfun@1407  -w "StartTime > '2018-02-10 00:00:00'" tw_textfun CR_CALL_HISTORY > calllog.sql

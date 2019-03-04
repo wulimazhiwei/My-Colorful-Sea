@@ -1,0 +1,68 @@
+1、按日期导出部分数据
+mysqldump -utw_textfun -ptw_textfun@1407  -w "StartTime > '2018-02-10 00:00:00'" tw_textfun CR_CALL_HISTORY > calllog.sql
+
+
+#!/bin/bash
+
+MNTH=`date +'%y%m%d'`
+START=`date -d "1 days ago" +'%Y-%m-%d %H:%M:%S'`
+#START='2018-12-25 01:00:00'
+END=`date +'%Y-%m-%d %H:%M:%S'`
+#END='2018-12-26 01:00:00'
+REMOTELOG='/var/lib/mysql-files/'
+LOCALLOG='/var/lib/mysql-files/logs/'
+
+declare -A APPLIST
+APPLIST=(
+    #['andr_textfun']='45.79.14.148'
+    ['tw_textfun']='45.33.125.43'
+)
+
+declare -A tableArray
+tableArray=(
+	['CR_USERS']='date_created'
+	['CR_CALL_HISTORY']='StartTime'
+	['SENDSMS']='date_created'
+	['CREDIT']='create_date'
+	['NUMBER_SELL']='create_date'
+	['CHECKIN_HISTORY']='date_created'
+   ['CHECK_IN']='local_date'
+   ['FORTUNE_WHEEL']='date_created'
+   ['INVITE']='create_date'
+   ['INVITE_HISTORY']='date_created'
+   ['LIMITATION']='local_date'
+   ['LUCK_DRAW_TOTAL']='local_date'
+   ['RECSMS']='date_created'
+)
+
+#${APPLIST[*]}  #取关联数组所有键
+for APP in ${!APPLIST[*]}
+do
+    for table in ${!tableArray[*]}
+    do
+        WHERE=''
+        if [ "${tableArray[$table]}"x != ""x ]
+        then
+           #WHERE=" --where=""'""${tableArray[$table]}"" between "'"'"${START}"'"'" and "'"'${END}'"'"'"
+           WHERE=" where ""${tableArray[$table]}"" between ""'""${START}""'"" and ""'""${END}""'"
+           #echo ${WHERE}
+
+        fi
+
+        FILE="${MNTH}""_""${APP}""_""${table}"".sql"
+        #echo ${FILE}
+        #DUMP="mysqldump -u${APP} -p${APP}"@1407" ${APP} ${table} ${WHERE} --single-transaction > "${FILE}""
+
+        EEE='"'"select * from ${table} ${WHERE} into outfile ""'"${REMOTELOG}${FILE}"';"'"'
+        DUMP="mysql -u${APP} -p${APP}"@1407" -D${APP} -e "${EEE}
+        #echo "${DUMP}"
+
+        #生产sql文件，并拷贝到测试环境，删除远程sql文件
+        /usr/bin/rsh root@"${APPLIST[$APP]}" -p 14070 -l root "cd ${REMOTELOG} ; ${DUMP};"
+        scp -P 14070 root@"${APPLIST[$APP]}":${REMOTELOG}${FILE} ${LOCALLOG}
+
+        /usr/bin/rsh root@"${APPLIST[$APP]}" -p 14070 -l root "cd ${REMOTELOG} ; rm ${FILE};"
+
+        mysql -u${APP} -p${APP}"@1407" -D${APP} -e "load data infile ""'"${LOCALLOG}${FILE}"'"" ignore into table ${table};"
+    done
+done
