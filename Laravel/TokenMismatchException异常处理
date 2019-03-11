@@ -1,0 +1,8 @@
+# https://www.cnblogs.com/yingww/p/5608003.html
+
+一种是在请求时将token值也提交过去，另一种是在防CSRF时排除所请求的路由，App\Http\Middleware\VerifyCsrfToken::class中添加路由如下：
+protected $except = [
+        //
+        '/bill/managetwilioacct',
+        '/bill/disableuser',
+    ];
