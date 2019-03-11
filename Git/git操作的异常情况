@@ -1,0 +1,7 @@
+1、在本地仓库添加文件并提交之后，使用git push origin master出现下述错误。
+error: src refspec master does not match any.
+error: failed to push some refs to 'git@github.com:KKMobile/MavlBackend.git'
+
+这可能是因为远程已经有更新，push之前需要先下拉同步最新改动。然后再push即可。
+git pull origin master
+git push origin master
