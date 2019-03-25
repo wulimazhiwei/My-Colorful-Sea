@@ -1,0 +1,21 @@
+1、集群中如果有数据库重启，需要检查：
+①mysql定时任务功能是否开启： 使用root权限登录数据库
+使用命令：SHOW VARIABLES LIKE 'event_scheduler';
+开启：set global event_scheduler =1;
+
+②高版本的数据库对sql_mode有严格限制，查看sql_mode设置是否正确： 使用root权限登录数据库
+查看：show variables like 'sql_mode%';
+设置：set global sql_mode = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+
+持久化：写入/etc/mysql/my.conf
+[mysqld]
+event_scheduler=ON
+sql_mode = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+
+2、查看数据库状态：
+mysql -uroot -psms@per#XN -e "show status like 'wsrep%';"
+
+运行此命令有问题，则说明数据库服务出现问题，需要查找原因并重启服务。
+运行此命令没有问题，则会输出一些列和数据库相关的状态；但也并不意味着数据库没有问题，需要关注wsrep_local_state_comment的值，如果该值为Initialized，
+表示节点是非操作组件的一部分，不能对外提供服务。同时也可以借鉴wsrep_cluster_status的值，如果为non-Primary，则也有可能是出现问题了。
+或者是wsrep_ready的值为OFF，则所有的数据库操作命令都不能被执行。
