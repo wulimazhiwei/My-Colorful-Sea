@@ -2,5 +2,9 @@
 SHOW VARIABLES LIKE 'event_scheduler';
 set global event_scheduler =1;
 
+持久化：写入/etc/mysql/my.conf
+[mysqld]
+event_scheduler=ON
+
 2、查看定时任务，root权限
 select * from mysql.event where db='andr_textfun';
