@@ -1,3 +1,7 @@
+持久化：写入/etc/mysql/my.conf
+[mysqld]
+sql_mode = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+
 1、查看sql_mode
 show variables like 'sql_mode%'；
 +---------------+-------------------------------------------------------------------------------------------------------------------------------------------+
