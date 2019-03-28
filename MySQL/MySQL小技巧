@@ -14,3 +14,9 @@ set password for 'root'@'localhost'=PASSWORD('123456');
 sql:select a.sid from tw_textfun.SENDSMS a,andr_textfun.SENDSMS b where a.Fnum = b.Fnum and a.Tnum = b.Tnum group by a.sid;
 
 GRANT all privileges on andr_textfun.* to tw_textfun@'%' identified by 'tw_textfun@1407' with grant option;
+
+2、MySQL集群节点状态变化通知
+wsrep_notify_cmd：Defines the command the node runs whenever cluster membership or the state of the node changes.
+
+refer：http://galeracluster.com/documentation-webpages/notificationcmd.html
+
