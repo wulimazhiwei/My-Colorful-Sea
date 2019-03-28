@@ -7,8 +7,8 @@
 # Edit parameters below to specify the address and login to server.
 
 USER=root
-PSWD=game@2004#XN
-HOST=173.230.137.234
+PSWD=rootpass
+HOST=<host_IP_address>
 PORT=3306
 
 SCHEMA="wsrep"
