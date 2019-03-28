@@ -1,0 +1,13 @@
+1、数据冗余：是在数据重复。
+2、查看MySQL的复制类型：
+MySQL的常用复制类型有两种：
+①基于SQL语句的复制(statement-based replication, SBR)
+②基于行的复制(row-based replication, RBR)
+
+mysql> select @@binlog_format;
++-----------------+
+| @@binlog_format |
++-----------------+
+| ROW             |
++-----------------+
+
