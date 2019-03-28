@@ -1,5 +1,7 @@
 1、MySQL的复制类型：
-MySQL的常用复制类型有三种： refer：https://www.cnblogs.com/langtianya/p/5504774.html
+MySQL的常用复制类型有三种： 
+refer：https://www.cnblogs.com/langtianya/p/5504774.html
+       https://dev.mysql.com/doc/refman/5.7/en/binary-log-formats.html
 ①基于SQL语句的复制(statement-based replication, SBR)
 ②基于行的复制(row-based replication, RBR)
 ③混合模式复制(mixed-based replication, MBR)
