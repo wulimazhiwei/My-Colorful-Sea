@@ -15,9 +15,10 @@ sql:select a.sid from tw_textfun.SENDSMS a,andr_textfun.SENDSMS b where a.Fnum =
 
 GRANT all privileges on andr_textfun.* to tw_textfun@'%' identified by 'tw_textfun@1407' with grant option;
 
-2、MySQL集群节点状态变化通知
+3、MySQL集群节点状态变化通知
 wsrep_notify_cmd：Defines the command the node runs whenever cluster membership or the state of the node changes.
 SHOW VARIABLES LIKE 'wsrep_notify_cmd';
 
 refer：http://galeracluster.com/documentation-webpages/notificationcmd.html
 
+实践：https://github.com/wulimazhiwei/My-Colorful-Sea/edit/master/MySQL/Practice/wsrep_notify.sh
