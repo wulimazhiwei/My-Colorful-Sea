@@ -4,10 +4,11 @@ MySQL的常用复制类型有两种：
 ①基于SQL语句的复制(statement-based replication, SBR)
 ②基于行的复制(row-based replication, RBR)
 
-mysql> select @@binlog_format;
-+-----------------+
-| @@binlog_format |
-+-----------------+
-| ROW             |
-+-----------------+
+mysql> show variables like 'binlog_format';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| binlog_format | ROW   |
++---------------+-------+
+
 
