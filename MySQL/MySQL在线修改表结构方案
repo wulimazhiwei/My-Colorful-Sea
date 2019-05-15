@@ -1,0 +1,52 @@
+如何在线修改数据量比较大的表结构?
+
+1. 起因: 修改表结构的时候会锁表, 给表加上排它锁, 只能读不能写或者更新; 如果该表数据量还比较大, 那么更会增加锁表的时间, 增加服务不可用的时间.
+example:
+mysql> select count(*) from CR_USERS;
++----------+
+| count(*) |
++----------+
+|  1908932 |
++----------+
+
+mysql> alter table CR_USERS add is_deleted enum('0','1') default '0' comment "本条记录是否删除, 0 未删除, 1 删除";
+Query OK, 0 rows affected (1 min 5.32 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table CREDIT modify num varchar(50);
+Query OK, 11648127 rows affected (7 min 58.93 sec)
+Records: 11648127  Duplicates: 0  Warnings: 0
+
+mysql> alter table LUCK_DRAW modify uid varchar(50);
+Query OK, 8921245 rows affected (4 min 4.47 sec)
+Records: 8921245  Duplicates: 0  Warnings: 0
+
+可以看到千万级别的数据库去修改一个字段的属性, 可能需要5-8分钟的锁表真空期, 这将会带来很大的业务影响.
+
+2. 解决方案: 增加中间表, 隔离业务表, 减少影响
+①复制业务原表表结构, 增加一个中间表.
+②rename表名, 将原表备份, 中间表命名为业务原表.
+③在原表备份表中进行表结构修改.
+④再次rename表名, 将中间表备份, 将原表备份恢复为为业务原表.
+⑤将中间备份表中产生的数据导入到业务原表.
+
+3. 具体实施命令
+① create table CREDIT_MID like CREDIT; 该命令不仅会复制表结构, 表的分区也能够复制.
+mysql> create table CREDIT_MID like CREDIT;
+Query OK, 0 rows affected (5.18 sec)
+
+mysql> select count(*) from CREDIT_MID;
++----------+
+| count(*) |
++----------+
+|        0 |
++----------+
+
+② rename table CREDIT to CREDIT_BAK;
+ rename table CREDIT_MID to CREDIT;
+③ alter table CREDIT_BAK modify num varchar(50);
+④ rename table CREDIT to CREDIT_MID;
+ rename table CREDIT_BAK to CREDIT;
+⑤ insert into CREDIT select * from CREDIT_MID;
+
+完成! 
