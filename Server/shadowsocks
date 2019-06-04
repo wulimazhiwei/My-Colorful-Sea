@@ -10,5 +10,5 @@ nohup sslocal -s 52.38.245.133 -p 4999 -l 5999 -k houmianxn -t 500  -m aes-256-c
 然后配置代理设置
 
 
-安装shaowsocks失败的处理方法:
+运行shaowsocks失败的处理方法:
 https://blog.csdn.net/blackfrog_unique/article/details/60320737
