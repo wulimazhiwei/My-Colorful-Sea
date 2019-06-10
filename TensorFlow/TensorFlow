@@ -1,1 +1,6 @@
-
+1. TensorFlow是一个基于数据流编程（dataflow programming）的符号数学系统，被广泛应用于各类机器学习（machine learning）算法的编程实现，
+其前身是谷歌的神经网络算法库DistBelief。
+2. tensor是tensorflow基础的一个概念——张量。 
+Tensorflow用到了数据流图，数据流图包括数据（Data）、流（Flow）、图（Graph）。Tensorflow里的数据用到的都是tensor，所以谷歌起名为tensorflow。 
+3. TensorFlow的特征: 高度的灵活性, 真正的可移植性（Portability）, 将科研和产品联系在一起, 自动求微分, 多语言支持, 性能最优化
+4. 安装: 基于 VirtualEnv 的安装 -> http://www.tensorfly.cn/tfdoc/get_started/os_setup.html
