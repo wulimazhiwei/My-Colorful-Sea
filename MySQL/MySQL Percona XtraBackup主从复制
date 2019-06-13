@@ -1,1 +1,25 @@
+1、Percona XtraBackup工具提供了一种在系统运行时执行MySQL数据热备份的方法。 Percona XtraBackup是一款免费的在线开源完整数据库备份解决方案，
+适用于所有版本的Percona Server for MySQL和MySQL®。它执行流式，压缩和增量MySQL备份，不会在备份期间锁定数据库。
 
+2、优势：
+  ①Backups that complete quickly and reliably
+  ②Uninterrupted transaction processing during backups
+  ③Savings on disk space and network bandwidth
+  ④Automatic backup verification
+  ⑤Higher uptime due to faster restore time
+  
+3、附注：随着Percona XtraBackup 8.0的推出，Percona XtraBackup 2.4将继续支持MySQL和Percona Server 5.6和5.7数据库。
+由于新的MySQL重做日志和数据字典格式，Percona XtraBackup 8.0.x版本将只与MySQL 8.0.x和即将推出的Percona Server for MySQL 8.0.x兼容。
+
+4、Percona XtraBackup工作原理： https://www.percona.com/doc/percona-xtrabackup/LATEST/how_xtrabackup_works.html
+Percona XtraBackup基于InnoDB的崩溃恢复功能。它会复制InnoDB数据文件，这会导致内部数据不一致；但随后它会对文件执行崩溃恢复，
+以使它们再次成为一致的可用数据库。
+这是有效的，因为InnoDB维护一个重做日志(redo log)，也称为事务日志。这包含对InnoDB数据的每次更改的记录。当InnoDB启动时，它会检查数据文件和事务日志，
+并执行两个步骤。它将已提交的事务日志条目应用于数据文件，并对修改数据但未提交的任何事务执行撤消操作。
+Percona XtraBackup通过在启动时记住日志序列号（LSN），然后复制数据文件来工作。这需要一些时间，所以如果文件正在改变，那么它们会在不同的时间点
+反映数据库的状态。与此同时，Percona XtraBackup运行后台进程，监视事务日志文件，并从中复制更改。 Percona XtraBackup需要不断地执行此操作，
+因为事务日志是以循环方式编写的，并且可以在一段时间后重用。 Percona XtraBackup需要事务日志记录，以便在数据文件开始执行后对其进行每次更改。
+
+总的来说，Percona XtraBackup会通过日志序列号，将redo log中最新的数据发生更改的记录复制并应用于其他节点，从而实现数据同步。
+
+5、install Percona XtraBackup 2.4 on ubuntu：https://www.percona.com/doc/percona-xtrabackup/2.4/installation/apt_repo.html
