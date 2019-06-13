@@ -7,6 +7,7 @@ cp -rp /var/lib/mysql /srv
 #master
 server_id=1
 log_bin binlog_format=ROW
+expire_log_days=7
 
 3、slave数据库配置文件： vi /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
@@ -20,6 +21,9 @@ master-info-repository=TABLE
 relay-log-info-repository=TABLE
 relay-log-recovery=1
 
-4、在master数据库里为slave数据库创建复制用户：
+4、安装复制工具Percona XtraBackup，参考链接如下：
+https://www.percona.com/doc/percona-xtrabackup/2.4/installation/apt_repo.html#installing-percona-xtrabackup-from-percona-apt-repository
+
+5、在master数据库里为slave数据库创建复制用户：
 GRANT REPLICATION SLAVE ON *.* TO 'repl'@'198.74.51.41' identified by 'repl@1407';
 
