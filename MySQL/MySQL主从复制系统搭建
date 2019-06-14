@@ -1,5 +1,5 @@
 1、申请两台服务器master（50.116.30.207）、slave（198.74.51.41）， 分别安装相同版本的数据库。
-修改数据库配置危机，将数据存放地址为/srv/mysql，并将元数据库存放目录复制到/srv/中:
+修改数据库配置，将数据存放地址为/srv/mysql，并将元数据库存放目录复制到/srv/中:
 cp -rp /var/lib/mysql /srv
 
 2、master数据库配置文件： vi /etc/mysql/mysql.conf.d/mysqld.cnf
