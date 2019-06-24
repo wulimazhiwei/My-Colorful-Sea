@@ -14,6 +14,8 @@ alias /var/lib/mysql/ -> /srv/mysql/,
 修改数据库配置，将数据存放地址为/srv/mysql，并将元数据库存放目录复制到/srv/中:
 cp -rp /var/lib/mysql /srv
 
+service apparmor restart
+
 2、master数据库配置文件： vi /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
 #master
