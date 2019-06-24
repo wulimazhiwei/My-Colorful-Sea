@@ -4,6 +4,7 @@ sudo apt-get install mysql-server
 进入mysql：
 SELECT user,authentication_string,plugin,host FROM mysql.user;
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ios@1407#XN';
+flush privileges;
 
 安装后移除apparmor开机自启动，这是一个应用级的保护程序，会影响修改mysql数据存放地址后重启MySQL服务。
 sudo update-rc.d -f apparmor remove
