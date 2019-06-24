@@ -1,29 +1,47 @@
 1、申请两台服务器master（50.116.30.207）、slave（198.74.51.41）， 分别安装相同版本的数据库。
-修改数据库配置，将数据存放地址为/srv/mysql，并将元数据库存放目录复制到/srv/中:
-cp -rp /var/lib/mysql /srv
+//修改数据库配置，将数据存放地址为/srv/mysql，并将元数据库存放目录复制到/srv/中:
+//cp -rp /var/lib/mysql /srv
+sudo apt-get install mysql-server
+进入mysql：
+SELECT user,authentication_string,plugin,host FROM mysql.user;
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ios@1407#XN';
 
 2、master数据库配置文件： vi /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
 #master
+#bind-address           = 127.0.0.1
 server_id=1
-log_bin binlog_format=ROW
+log_bin
 expire_log_days=7
+log_bin = /var/log/mysql/mysql-bin.log
 
+重启数据库。
 3、slave数据库配置文件： vi /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
 # slave
 server_id=2
 read-only
-skip-slave-start
-log_bin
-log-slave-updatesbinlog_format=ROW
-master-info-repository=TABLE
-relay-log-info-repository=TABLE
-relay-log-recovery=1
+relay-log = /var/log/mysql/mysql-relay-bin.log
+log_bin = /var/log/mysql/mysql-bin.log
 
-4、安装复制工具Percona XtraBackup，参考链接如下：
-https://www.percona.com/doc/percona-xtrabackup/2.4/installation/apt_repo.html#installing-percona-xtrabackup-from-percona-apt-repository
-
-5、在master数据库里为slave数据库创建复制用户：
+4、在master数据库里为slave数据库创建复制用户：
 GRANT REPLICATION SLAVE ON *.* TO 'repl'@'198.74.51.41' identified by 'repl@1407';
 
+5、show master status;
++------------------+----------+--------------+------------------+-------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |
++------------------+----------+--------------+------------------+-------------------+
+| mysql-bin.000380 |      154 |              |                  |                   |
++------------------+----------+--------------+------------------+-------------------+
+
+6、建立主从：
+CHANGE MASTER TO MASTER_HOST='50.116.30.207',MASTER_USER='repl', MASTER_PASSWORD='repl@1407', MASTER_LOG_FILE='mysql-bin.000380', MASTER_LOG_POS= 154;
+
+7、启动slave：
+START SLAVE;
+SHOW SLAVE STATUS\G
+#If there is an issue in connecting, you can try starting slave with a command to skip over it:
+#SET GLOBAL SQL_SLAVE_SKIP_COUNTER = 1; SLAVE START; 
+
+8、STOP SLAVE;
+SHOW SLAVE STATUS\G
