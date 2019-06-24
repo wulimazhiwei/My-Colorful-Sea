@@ -2,6 +2,8 @@
 #https://vitux.com/how-to-install-and-configure-mysql-in-ubuntu-18-04-lts/
 安装后移除apparmor开机自启动，这是一个应用级的保护程序，会影响修改mysql数据存放地址后重启MySQL服务。
 sudo update-rc.d -f apparmor remove
+或者： vi /etc/apparmor.d/tunables/alias  修改datadir映射
+alias /var/lib/mysql/ -> /srv/mysql/,
 
 修改数据库配置，将数据存放地址为/srv/mysql，并将元数据库存放目录复制到/srv/中:
 cp -rp /var/lib/mysql /srv
