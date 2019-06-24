@@ -1,10 +1,17 @@
 1、申请两台服务器master（50.116.30.207）、slave（198.74.51.41）， 分别安装相同版本的数据库。
+#https://vitux.com/how-to-install-and-configure-mysql-in-ubuntu-18-04-lts/
 //修改数据库配置，将数据存放地址为/srv/mysql，并将元数据库存放目录复制到/srv/中:
 //cp -rp /var/lib/mysql /srv
 sudo apt-get install mysql-server
 进入mysql：
 SELECT user,authentication_string,plugin,host FROM mysql.user;
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ios@1407#XN';
+
+修改MySQL datadir路径（Ubuntu 18.04）：
+vi /etc/apparmor.d/tunables/alias
+alias /var/lib/mysql/ -> /srv/mysql/,
+
+systemctl restart apparmor
 
 2、master数据库配置文件： vi /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
