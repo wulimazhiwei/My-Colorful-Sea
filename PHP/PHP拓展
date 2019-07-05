@@ -14,3 +14,13 @@ Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies
 
 sudo apt-get --purge remove php-common
 sudo apt-get install php-common php-mysql php-cli
+
+但这可能会导致一些东西丢失，可以尝试运行以下命令：
+sudo apt-get install libssl-dev
+ sudo apt-get install build-essential
+ wget http://nchc.dl.sourceforge.net/project/pcre/pcre/8.39/pcre-8.39.tar.gz
+ tar -xvz -f pcre-8.39.tar.gz
+ cd pcre-8.39/
+ ./configure --enable-utf8 --enable-unicode-properties
+ sudo make
+ sudo make install
