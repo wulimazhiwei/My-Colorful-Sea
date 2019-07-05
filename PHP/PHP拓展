@@ -1,0 +1,16 @@
+1、使用php -v查看PHP的版本，如果有如下错误信息，
+PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_mysql.so' (tried: /usr/lib/php/20170718/pdo_mysql.so 
+(/usr/lib/php/20170718/pdo_mysql.so: undefined symbol: mysqlnd_allocator), /usr/lib/php/20170718/pdo_mysql.so.so 
+(/usr/lib/php/20170718/pdo_mysql.so.so: cannot open shared object file: No such file or directory)) in Unknown on line 0
+PHP 7.2.19-0ubuntu0.18.04.1 (cli) (built: Jun  4 2019 14:48:12) ( NTS )
+Copyright (c) 1997-2018 The PHP Group
+Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies
+    with Zend OPcache v7.2.19-0ubuntu0.18.04.1, Copyright (c) 1999-2018, by Zend Technologies
+
+2、使用php -m查看已开启的拓展模块，如果只有PDO拓展没有pdo_mysql。
+3、使用pdo连接数据报 no driver的错误。
+
+遇到上述三者中的任何一种情况，都可以使用以下方法解决。
+
+sudo apt-get --purge remove php-common
+sudo apt-get install php-common php-mysql php-cli
