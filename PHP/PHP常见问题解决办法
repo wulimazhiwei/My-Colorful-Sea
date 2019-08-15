@@ -1,0 +1,15 @@
+1、启动自己编译的Apache服务时报错：sh ctrlapache.sh start
+httpd: Syntax error on line 66 of /home/admin/apachec/conf/httpd.conf: Cannot load /usr/lib/apache2/modules/libphp7.0.so 
+into server: /usr/lib/apache2/modules/libphp7.0.so: cannot open shared object file: No such file or directory
+
+原因：可能是新服务器没有安装Apache
+解决办法：
+sudo apt-get install libaprutil1 apache2 php7.2 php-mcrypt libapache2-mod-phpphp7.2-mbstring
+sudo service apache2 stop
+sudo update-rc.d -f apache2 remove
+
+然后，修改conf/httpd.conf，将LoadModule php7_module /usr/lib/apache2/modules/libphp7.0.so
+改为LoadModule php7_module /usr/lib/apache2/modules/libphp7.2.so
+
+最后设置开机自启动：vi /etc/rc.local
+su root -l -c "sh /home/admin/apachec/ctrlapache.sh start"
