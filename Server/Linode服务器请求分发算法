@@ -1,3 +1,4 @@
+# https://www.linode.com/docs/platform/nodebalancer/nodebalancer-reference-guide/#algorithm
 # 算法 Algorithm
 1、Round Robin：轮询调度算法(Round-Robin Scheduling)
 轮询调度算法的原理是每一次把来自用户的请求轮流分配给内部中的服务器，从1开始，直到N(内部服务器个数)，然后重新开始循环。
