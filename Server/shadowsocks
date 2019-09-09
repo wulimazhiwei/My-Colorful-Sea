@@ -1,4 +1,4 @@
-安装软件
+1、安装软件
 sudo apt-get update
 sudo apt-get install python-gevent python-pip
 sudo pip install shadowsocks
@@ -12,3 +12,6 @@ nohup sslocal -s 52.38.245.133 -p 4999 -l 5999 -k houmianxn -t 500  -m aes-256-c
 
 运行shaowsocks失败的处理方法:
 https://blog.csdn.net/blackfrog_unique/article/details/60320737
+
+2、Linode上搭建shadowsocks的方法：
+https://www.4spaces.org/linode-shadowsocks/
