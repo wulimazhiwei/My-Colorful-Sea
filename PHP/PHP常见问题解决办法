@@ -1,3 +1,19 @@
+3、在导入ROI_Imperssion数据的时候出现了一个错误，ERROR 1267 (HY000): Illegal mix of collations (ascii_general_ci,IMPLICIT) and 
+(utf8_general_ci,COERCIBLE) for operation '='
+从字面上去理解是等号两边的字符集不一致，导致查询或者插入时出现错误。样例sql如下：
+select id from ANA_ANDRIMPRESSION where appid = '11' and day = '20190703' and first_open_date = '20190703' and 
+impsid = 'ls;call.recorder.automatic.acr;2'and impstype = 'n' and country = 'United States' and version = '1.9.1' 
+and name = '0427_ACR_US_UAC_ly_0.95 #2测试10.30' and medium = 'cpc' and source = 'google';
+
+之前遇到过类似的问题，所以比较有经验，首先看了表ANA_ANDRIMPRESSION的字符集是ASCII，但是具体sql里面对应字段name的值中包含汉字，
+而ASCII是存不了汉字的，因此将name字段的字符集改为utf8即可解决问题。 
+alter table ANA_ANDRIMPRESSION change name name varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci  default null;
+    
+2、在测试批量上传CDO数据的过程中发现，mac操作系统在打包文件的时候会多出来一个_macosx目录，程序在解压包之后去遍历文件处理数据，但对目录的操作会
+失败导致数据导入失败。因此在程序中加入了将要处理的文件是不是目录的判断，如果是则跳出本次循环。这就要求尽量让自己要上传的文件都只放在一级目录下面，
+不要放在多级目录里面。但在判断是不是目录的地方也有一个需要注意的点：在使用opendir()打开一个目录后，遍历该目录下面的所有文件，用php的is_dir函数
+判断时需要带上打开目录的相对路径，否则会判断为非目录
+
 1、启动自己编译的Apache服务时报错：sh ctrlapache.sh start
 httpd: Syntax error on line 66 of /home/admin/apachec/conf/httpd.conf: Cannot load /usr/lib/apache2/modules/libphp7.0.so 
 into server: /usr/lib/apache2/modules/libphp7.0.so: cannot open shared object file: No such file or directory
