@@ -15,3 +15,34 @@ https://blog.csdn.net/blackfrog_unique/article/details/60320737
 
 2、Linode上搭建shadowsocks的方法：
 https://www.4spaces.org/linode-shadowsocks/
+
+
+3、服务器搭建shadowsocks Server
+
+sudo apt-get update; sudo apt-get -y install python-gevent python-pip python-m2crypto
+sudo pip install shadowsocks
+
+# Ubuntu 18.04: 搜索 cleanup 并将其替换为 reset 。
+cp /usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/openssl.py /usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/openssl.py.bak
+sed -i "s/EVP_CIPHER_CTX_cleanup/EVP_CIPHER_CTX_reset/g"  /usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/openssl.py
+
+mkdir /etc/shadowsocks
+cat <<EOF >/etc/shadowsocks/config.json
+{
+"server":"0.0.0.0",
+"server_port":4999,
+"local_port":5999,
+"password":"infrarptvps@Xn",
+"timeout":500,
+"method":"aes-256-cfb"
+}
+EOF
+
+mkdir ~/tools/
+
+cat <<EOF >~/tools/proxy.sh
+ps -ef | grep ssserver | grep -v 'grep' | awk '{print \$2}' | xargs kill -9
+nohup ssserver -c /etc/shadowsocks/config.json &
+EOF
+
+sh ~/tools/proxy.sh
