@@ -1,0 +1,9 @@
+<?php
+$start_date = "2018-05-31";
+$end_date = "2018-06-01";
+
+$datetime_start = new DateTime($start_date);
+$datetime_end = new DateTime($end_date);
+$days = $datetime_start->diff($datetime_end)->days;
+echo "时间差是:$days";
+?>
