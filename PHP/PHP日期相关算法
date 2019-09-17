@@ -1,3 +1,5 @@
+1、两日期差（时间对象）
+# https://blog.csdn.net/u014158869/article/details/87885478
 <?php
 $start_date = "2018-05-31";
 $end_date = "2018-06-01";
