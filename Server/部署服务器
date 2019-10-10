@@ -155,7 +155,11 @@ vi /etc/fstab
 /dev/sdc /srv ext4 noatime,errors=remount-ro  0 1
 
 ----------  install mysql ----------------
-apt-get install percona-xtradb-cluster-5.6
+wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+sudo dpkg -i percona-release_latest.generic_all.deb
+percona-release setup pxc56
+apt-get install percona-xtradb-cluster-57
+service mysql stop
 
 game1/2/3 root/game@2004#XN
 
