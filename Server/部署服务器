@@ -195,7 +195,7 @@ service mysql bootstrap-pxc
 mysql -uroot -pgame@2004#XN
 
 CREATE USER 'sstxnadmin'@'localhost' IDENTIFIED BY 'sstxnadminPassw0D';
-GRANT RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO 'sstxnadmin'@'localhost';
+GRANT RELOAD,process, LOCK TABLES, REPLICATION CLIENT ON *.* TO 'sstxnadmin'@'localhost';
 FLUSH PRIVILEGES;
 show status like 'wsrep%';
 
