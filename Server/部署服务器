@@ -51,6 +51,7 @@ admin ALL=(ALL) NOPASSWD: ALL
 the key is to add it after the last line which says
 #includedir /etc/sudoers.d
 
+
 ------第6步和第7步可不做-------
 6. vi /etc/php/7.0/apache2/php.ini
 max_input_vars = 15000
@@ -155,17 +156,19 @@ vi /etc/fstab
 /dev/sdc /srv ext4 noatime,errors=remount-ro  0 1
 
 ----------  install mysql ----------------
+#https://www.percona.com/doc/percona-xtradb-cluster/5.6/howtos/ubuntu_howto.html#ubuntu-howto
 wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
 sudo dpkg -i percona-release_latest.generic_all.deb
-percona-release setup pxc56
+percona-release setup pxc55
+apt-get install percona-xtradb-cluster-55
+或者
+percona-release setup pxc57
 apt-get install percona-xtradb-cluster-57
 service mysql stop
 
 game1/2/3 root/game@2004#XN
 
-service mysql stop
-
-https://www.percona.com/doc/percona-xtradb-cluster/5.6/howtos/ubuntu_howto.html#ubuntu-howto
+percona 5.5配制方法：
 
 cp -rp /var/lib/percona-xtradb-cluster /srv/
 vi /etc/mysql/percona-xtradb-cluster.conf.d/mysqld.cnf
@@ -237,6 +240,21 @@ mysql -uroot -pgame@2004#XN -e "show status like 'wsrep%';"
 
 确认各节点数据是否正常复制。
 
+percona 5.7配置方法：
+#https://www.percona.com/doc/percona-xtradb-cluster/5.7/configure.html
+cp -rp /var/lib/mysql /srv/
+vi /etc/mysql/percona-xtradb-cluster.conf.d/mysqld.cnf
+change datadir to
+/srv/mysql
+port 3306
+
+vi /etc/mysql/percona-xtradb-cluster.conf.d/wsrep.cnf
+补全：wsrep_cluster_address=gcomm://45.79.111.116,45.56.90.67,45.33.58.251
+添加：
+wsrep_node_address=45.56.90.67
+wsrep_sst_auth="sstxnadmin:sstxnadminPassw0D"
+
+其他节点类似
 ----------alarm Crontab ----------------
 将这三台服务器加入磁盘空间检测脚本
 首先要服务器免密互信
