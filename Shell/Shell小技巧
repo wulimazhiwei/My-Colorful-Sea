@@ -13,6 +13,10 @@ ringing 15820
 canceled 10
 no-answer 519
 
+more xj6ni7plyznk_2019-12-03* | grep ",ca," | grep ad_impression_unit_unity | awk -F "," '{print strftime("%Y-%m-%d",$11)}' 
+|awk  '{s[$1] += 1}END{ for(i in s){  print i, s[i] } }' | grep "2019-12-03"
+
+
 3、权限赋予
 #https://blog.csdn.net/icanlove/article/details/39667265
 
