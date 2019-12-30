@@ -1,0 +1,4 @@
+fdisk -l
+umount /dev/sdb1
+mkfs.vfat  -I  /dev/sdb
+dd if='/home/mazhiwei/Downloads/ubuntukylin-16.04-desktop-amd64.iso' of=/dev/sdb
