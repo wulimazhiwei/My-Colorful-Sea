@@ -1,0 +1,11 @@
+关于新办公室ssh链接5分钟无操作中断的现象
+
+1. 原因
+网络服务提供商为了释放网络资源消耗压力，有个NAT超时时间，联通在有固定公网IP的企业宽带上尤其严格，大概是5分钟
+相关背景：https://www.cnblogs.com/sjjg/p/5830009.html
+
+2. 解决办法
+客户端配置加上一个定时心跳
+sudo vi /etc/ssh/ssh_config  #或~/.ssh/config
+TCPKeepAlive=yes
+ServerAliveInterval 60   #客户端主动向服务端请求响应的间隔
