@@ -5,5 +5,5 @@ ftp 172.104.118.152
 username：ftp
 passwd：ftp@chengdu
 
-passive
-ls
+ftp> passive
+ftp> ls
