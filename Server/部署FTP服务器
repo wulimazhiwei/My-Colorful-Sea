@@ -3,7 +3,7 @@
 登录：
 ftp 172.104.118.152
 username：ftp
-passwd：ftp@chengdu
+passwd：ftp@*****
 
 ftp> passive
 ftp> ls
