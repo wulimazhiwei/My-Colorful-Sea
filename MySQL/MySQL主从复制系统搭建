@@ -45,7 +45,7 @@ GRANT REPLICATION SLAVE ON *.* TO 'repl'@'198.74.51.41' identified by 'repl@1407
 | mysql-bin.000380 |      154 |              |                  |                   |
 +------------------+----------+--------------+------------------+-------------------+
 
-6、建立主从：
+6、在从库建立主从：
 CHANGE MASTER TO MASTER_HOST='50.116.30.207',MASTER_USER='repl', MASTER_PASSWORD='repl@1407', MASTER_LOG_FILE='mysql-bin.000380', MASTER_LOG_POS= 154;
 
 7、启动slave：
