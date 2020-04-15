@@ -29,10 +29,17 @@ Max realtime timeout      unlimited            unlimited            us
 
 Max open files 最大打开数为5000
 2.3 在线修改 prlimit -n200000 -p23381
-2.4 持久化修改
+2.4 持久化修改(不生效)
 修改文件:vi /etc/security/limits.conf
 mysql hard nofile 2000000
 mysql soft nofile 2000000
+2.4 持久化修改
+#https://blog.werk21.de/en/2017/04/19/set-limit-open-files-mysql-ubuntu-1604-systemd
+$ systemctl edit mysql
+
+[Service]
+LimitNOFILE=200000
+
 
 案例：
 告警处理过程总结：
