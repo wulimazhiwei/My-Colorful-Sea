@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>演示文档</title>
+
+    <script type="text/javascript" language="javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+
+    <!--图 https://www.chartjs.org/docs/latest/charts/bar.html -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script type="text/javascript" src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
+    <script type="text/javascript" src="https://www.chartjs.org/samples/latest/utils.js"></script>
+
+    <!-- 下拉框样式 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <!-- 下拉框样式 -->
+   
+</head>
+<body>
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6" id="canvas1">
+            <select class="selectpicker show-tick Chart " title="选择曲线" id="1">
+                <option data-divider="true"></option>
+                <option value="1">曲线1</option>
+                <option value="2">曲线2</option>                        
+            </select>
+            <canvas id="myChart1" style=" height: 300px"></canvas>
+        </div>
+        <div class="col-md-6" id="canvas2">
+            <select class="selectpicker show-tick Chart" title="选择曲线" id="2">
+                <option data-divider="true"></option>
+                <option value="1">曲线1</option>
+                <option value="2">曲线2</option>                        
+            </select>
+            <canvas id="myChart2" style=" height: 300px"></canvas>
+        </div>
+    </div>
+</div>
+<script>
+
+    var myChartConfig1 = '';
+    var myChartConfig2 = '';
+    var labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    
+    var myChartData1 =  [
+        createDatesets('Crash', [1,2,9,4,5,7,5]),
+        createDatesets('ANR', [6,4,5,7,5,3,1]),
+    ];
+    var myChartData2 =  [
+        createDatesets('Crash', [6,4,5,7,5,3,1]),
+        createDatesets('ANR', [1,2,9,4,5,7,5]),
+    ];
+    
+    // 增加新的图表时需要修改这里, 需要配置数据
+    
+    //加载配置, 增加新的图表时需要修改这里
+    $(document).ready(function() {
+                [{
+                    id: '1',
+                    Labels: labels,
+                    config: '实时数据(UTC)'
+                }, {
+                    id: '2',
+                    Labels: labels,
+                    config: 'Play数据'
+                }].forEach(function(Charts) {
+                    window["myChartConfig" + Charts.id] = createChartConfig(Charts.Labels,Charts.config);
+
+                    //默认展示
+                    $('#' + Charts.id).val(1);
+                    window["myChartConfig" + Charts.id].data.datasets.push(window["myChartData" + Charts.id][0]);
+                });
+    });
+
+    //显示图形, 增加新的图表时需要修改这里
+    window.onload = function() {
+                [{
+                    id: 'myChart1',
+                    config: myChartConfig1
+                }, {
+                    id: 'myChart2',
+                    config: myChartConfig2
+                }].forEach(function(details) {
+                    var ctx = document.getElementById(details.id).getContext('2d');
+                    window[details.id] = new Chart(ctx, details.config);
+                });
+    };
+
+    //绑定onchange事件
+    $('.Chart').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            var select_id = $(this).attr("id"); //1
+            var checkedData = $('#' + select_id).val();
+            var renderData = [];
+            if (checkedData) {
+                if (Array.isArray(checkedData)) {
+                    checkedData.map(function (n) {
+                        renderData.push(window["myChartData" + select_id][n - 1]);
+                    })
+                } else {
+                    renderData.push(window["myChartData" + select_id][checkedData - 1]);
+                }
+            }
+            window["myChartConfig" + select_id].data.datasets = renderData;
+            window["myChart" + select_id].update();
+    });
+
+    function createChartConfig(Labels,legendTitle) {
+        return {
+            type: 'line',
+            data: {
+                labels: Labels,
+                datasets: []
+            },
+            options: createOptionConfig(legendTitle)
+        };
+    }
+
+    function createDatesets(label, data) {
+        return {
+                label: label,
+                data: data,
+                borderColor: 'rgba(65, 131, 231,1)',
+                borderWidth: 2,
+                fill: false,
+                type: 'line',
+        };
+    }
+
+    function createOptionConfig(legendTitle) {
+        return  {
+					responsive: true,
+                    legend: { 
+                        display: false,
+                        defaultFontColor: '#000000', 
+                    },
+					hoverMode: 'index',
+					stacked: false,
+					title: {
+                        display: true,
+                        text: legendTitle
+                    }
+				};
+    }
+    </script>
+</body>
+</html>
