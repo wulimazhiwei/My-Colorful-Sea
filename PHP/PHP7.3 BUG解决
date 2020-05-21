@@ -1,0 +1,10 @@
+#https://www.itechempires.com/2019/09/how-to-uninstall-and-install-composer-in-ubuntu/
+
+1. 卸载composer
+sudo apt-get remove composer
+sudo apt-get purge --auto-remove composer
+
+2. 重新安装
+curl -sS https://getcomposer.org/installer | sudo php
+sudo mv composer.phar /usr/bin/composer
+composer
