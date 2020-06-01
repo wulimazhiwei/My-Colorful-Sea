@@ -25,10 +25,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6" id="canvas1">
-            <select class="selectpicker show-tick Chart " title="选择曲线" id="1">
+            <select class="selectpicker show-tick Chart" title="选择曲线" id="1">
                 <option data-divider="true"></option>
-                <option value="1">曲线1</option>
-                <option value="2">曲线2</option>                        
+                <option value="1">新增</option>
+                <option value="2">活跃</option>                            
             </select>
             <canvas id="myChart1" style=" height: 300px"></canvas>
         </div>
@@ -43,19 +43,20 @@
     </div>
 </div>
 <script>
-
     Chart.defaults.global.defaultFontColor = 'black';
     var myChartConfig1 = '';
     var myChartConfig2 = '';
     var labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
     
     var myChartData1 =  [
-        createDatesets('Crash', [1,2,9,4,5,7,5]),
-        createDatesets('ANR', [6,4,5,7,5,3,1]),
+        createDatesets('今日新增', [1,2,9,4,5,7,5], 'default'),
+        createDatesets('昨日新增', [6,4,5,7,5,3,1], 'rgb(107, 194, 113)'),
+        createDatesets('今日活跃', [1,2,9,4,5,7,5], 'default'),
+        createDatesets('昨日活跃', [6,4,5,7,5,3,1], 'rgb(107, 194, 113)'),
     ];
     var myChartData2 =  [
-        createDatesets('Crash', [6,4,5,7,5,3,1]),
-        createDatesets('ANR', [1,2,9,4,5,7,5]),
+        createDatesets('Crash', [6,4,5,7,5,3,1], 'default'),
+        createDatesets('ANR', [1,2,9,4,5,7,5], 'default'),
     ];
     
     // 增加新的图表时需要修改这里, 需要配置数据
@@ -65,17 +66,24 @@
                 [{
                     id: '1',
                     Labels: labels,
+                    display: true,
                     config: '实时数据(UTC)'
                 }, {
                     id: '2',
                     Labels: labels,
+                    display: false,
                     config: 'Play数据'
                 }].forEach(function(Charts) {
-                    window["myChartConfig" + Charts.id] = createChartConfig(Charts.Labels,Charts.config);
+                    window["myChartConfig" + Charts.id] = createChartConfig(Charts.Labels,Charts.config,Charts.display);
 
-                    //默认展示
+                    //默认展示, 实时新增数据需要展示2条线,需要特殊处理
                     $('#' + Charts.id).val(1);
-                    window["myChartConfig" + Charts.id].data.datasets.push(window["myChartData" + Charts.id][0]);
+                    if (Charts.id == 1) {
+                        window["myChartConfig" + Charts.id].data.datasets.push(window["myChartData" + Charts.id][0]);
+                        window["myChartConfig" + Charts.id].data.datasets.push(window["myChartData" + Charts.id][1]);
+                    } else {
+                        window["myChartConfig" + Charts.id].data.datasets.push(window["myChartData" + Charts.id][0]);
+                    }
                 });
     });
 
@@ -104,41 +112,55 @@
                         renderData.push(window["myChartData" + select_id][n - 1]);
                     })
                 } else {
-                    renderData.push(window["myChartData" + select_id][checkedData - 1]);
+                    // 实时新增数据需要展示2条线,需要特殊处理
+                    if (select_id == 1) { 
+                        if (checkedData == 1) {
+                            renderData.push(window["myChartData" + select_id][0]);
+                            renderData.push(window["myChartData" + select_id][1]);
+                        }else {
+                            renderData.push(window["myChartData" + select_id][2]);
+                            renderData.push(window["myChartData" + select_id][3]);
+                        }
+                        
+                    } else {
+                        renderData.push(window["myChartData" + select_id][checkedData - 1]);
+                    }
                 }
             }
             window["myChartConfig" + select_id].data.datasets = renderData;
             window["myChart" + select_id].update();
     });
 
-    function createChartConfig(Labels,legendTitle) {
+    function createChartConfig(Labels,legendTitle,display) {
         return {
             type: 'line',
             data: {
                 labels: Labels,
                 datasets: []
             },
-            options: createOptionConfig(legendTitle)
+            options: createOptionConfig(legendTitle,display)
         };
     }
 
-    function createDatesets(label, data) {
+    function createDatesets(label, data, color) { 
+        if (color == 'default') {
+            color = 'rgba(65, 131, 231,1)';
+        }
         return {
                 label: label,
                 data: data,
-                borderColor: 'rgba(65, 131, 231,1)',
+                borderColor: color,
                 borderWidth: 2,
                 fill: false,
                 type: 'line',
         };
     }
 
-    function createOptionConfig(legendTitle) {
+    function createOptionConfig(legendTitle,display) {
         return  {
 					responsive: true,
                     legend: { 
-                        display: false,
-                        defaultFontColor: '#000000', 
+                        display: display,
                     },
 					hoverMode: 'index',
 					stacked: false,
