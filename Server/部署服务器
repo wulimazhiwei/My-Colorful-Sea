@@ -20,6 +20,100 @@ vi /etc/hosts
 
 ssh-keygen
 
+----编译一个apapche环境到目录/home/admin/apachea---
+# su - admin
+$ wget http://mirror.bit.edu.cn/apache//httpd/httpd-2.4.23.tar.gz
+$ gzip -d httpd-2.4.23.tar.gz
+$ tar xvf httpd-2.4.23.tar
+$ cd ~/httpd-2.4.20/
+
+$ wget http://mirrors.sonic.net/apache//apr/apr-1.5.2.tar.gz
+$ wget http://mirrors.sonic.net/apache//apr/apr-util-1.5.4.tar.gz
+
+$ tar -zxvf apr-1.5.2.tar.gz
+$ tar -zxvf apr-util-1.5.4.tar.gz
+
+$ cd ~/httpd-2.4.20/
+$ mv apr-util-1.5.4 srclib/apr-util
+$ mv apr-1.5.2 srclib/ap
+
+$ sudo apt-get install libssl-dev
+$ sudo apt-get install build-essential
+
+$ wget http://nchc.dl.sourceforge.net/project/pcre/pcre/8.39/pcre-8.39.tar.gz
+$ tar -xvz -f pcre-8.39.tar.gz
+$ cd pcre-8.39/
+$ ./configure
+$ sudo make
+$ sudo make install
+
+$ cd ~/httpd-2.4.20/
+$ make clean
+$ sudo ./configure --prefix=/home/admin/apachea --with-mpm=prefork --enable-module=so --enable-mods-shared=all --enable-ssl --enable-so
+$ make
+$ make install
+
+检查环境
+$ vi /home/admin/apachea/conf/httpd.conf
+$ home/admin/apachea/bin/apachectl -k star
+
+----写一个启动/停止脚本放在/home/admin/apachea/目录下(替换apacheb为apachea)---
+
+root@app4:/home/admin/apacheb# more ctrlapache.sh
+#!/bin/sh
+
+ARGV="$@"
+HTTPD1='/home/admin/apacheb/bin/httpd'
+
+
+if test -f /home/admin/apacheb/bin/envvars; then
+  . /home/admin/apacheb/bin/envvars
+fi
+
+LYNX="links -dump"
+
+STATUSURL="http://localhost:8080/server-status"
+
+ULIMIT_MAX_FILES="ulimit -S -n `ulimit -H -n`"
+
+if [ "x$ULIMIT_MAX_FILES" != "x" ] ; then
+    $ULIMIT_MAX_FILES
+fi
+
+ERROR=0
+if [ "x$ARGV" = "x" ] ; then
+    ARGV="-h"
+fi
+
+case $ARGV in
+start|stop|restart|graceful|graceful-stop)
+    $HTTPD1 -f /home/admin/apacheb/conf/httpd.conf -k $ARGV
+    ERROR=$?
+    ;;
+startssl|sslstart|start-SSL)
+    echo The startssl option is no longer supported.
+    echo Please edit httpd.conf to include the SSL configuration settings
+    echo and then use "apachectl start".
+    ERROR=2
+    ;;
+configtest)
+    $HTTPD1 -t
+    ERROR=$?
+    ;;
+status)
+    $LYNX $STATUSURL | awk ' /process$/ { print; exit } { print } '
+    ;;
+fullstatus)
+    $LYNX $STATUSURL
+    ;;
+*)
+    $HTTPD1 $ARGV
+    ERROR=$?
+esac
+
+exit $ERROR
+
+
 ----------OS env definition-----------------
 apt-get update
 
