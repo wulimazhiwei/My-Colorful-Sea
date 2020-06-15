@@ -262,6 +262,16 @@ percona-release setup pxc57
 apt-get install percona-xtradb-cluster-57
 service mysql stop
 
+####percona 8.0版本安装
+wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+dpkg -i percona-release_latest.generic_all.deb
+percona-release setup pxc-80
+apt-get install percona-xtradb-cluster
+
+管理节点: systemctl start mysql@bootstrap.service
+其他节点: systemctl staart mysql
+########## 8.0
+
 game1/2/3 root/game@2004#XN
 
 percona 5.5配制方法：
