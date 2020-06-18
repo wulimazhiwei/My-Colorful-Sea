@@ -254,14 +254,16 @@ vi /etc/fstab
 #单机数据库8.0版本 https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04
 #集群 https://www.percona.com/doc/percona-xtradb-cluster/5.6/howtos/ubuntu_howto.html#ubuntu-howto
 
-percona-release setup pxc55
-apt-get install percona-xtradb-cluster-55
-或者
-percona-release setup pxc57
-apt-get install percona-xtradb-cluster-57
-service mysql stop
+#其他版本
+apt-get update
+more /etc/lsb-release
+dpkg -l | grep percona
+apt-cache search percona //找到当前操作系统所对应的percona cluster非二进制版本,然后安装
+apt-get install percona-xtradb-cluster-56
 
 ####percona 8.0版本安装
+wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb	
+dpkg -i percona-release_latest.generic_all.deb	
 percona-release setup pxc-80
 apt-get install percona-xtradb-cluster
 
