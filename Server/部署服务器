@@ -253,8 +253,7 @@ vi /etc/fstab
 #单机数据库5.6版本 https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04
 #单机数据库8.0版本 https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04
 #集群 https://www.percona.com/doc/percona-xtradb-cluster/5.6/howtos/ubuntu_howto.html#ubuntu-howto
-wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
-sudo dpkg -i percona-release_latest.generic_all.deb
+
 percona-release setup pxc55
 apt-get install percona-xtradb-cluster-55
 或者
@@ -263,8 +262,6 @@ apt-get install percona-xtradb-cluster-57
 service mysql stop
 
 ####percona 8.0版本安装
-wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
-dpkg -i percona-release_latest.generic_all.deb
 percona-release setup pxc-80
 apt-get install percona-xtradb-cluster
 
