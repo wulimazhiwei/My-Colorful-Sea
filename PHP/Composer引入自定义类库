@@ -1,0 +1,45 @@
+Composer引入自定义组件指南
+以Adjust打点组件为例：
+● 将MavlComponent组件更新至 Saas/ 目录。
+● 修改根目录下composer.json文件，在autoload->classmap键中增加类库路径，本步骤在第一次引入类库时执行。
+此例中类库路径为MavlComponent/Adjust，表示引入的Adjust打点功能，也可以写成MavlComponent/ 以引入组件内所有功能。
+```
+   "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "classmap": [
+            "MavlComponent/Adjust",
+            "database/seeds",
+            "database/factories"
+        ]
+    },
+```
+● 运行 composer dump-autoload 命令重新生成自动加载文件，使其生效。（重要）
+● 在使用组件功能时，只需引入功能的命名空间即可使用。
+
+```
+require 'path/to/vendor/autoload.php';
+
+use MavlComponent\Adjust\OrderCollect\AdjustOrderCollect;
+
+$password = 'password'; //应用内共享密钥，必传
+$keySecret ='md5Key'; //参数加密密钥，必传
+$receiptPathBackup ='***'; //票据的备份存储路径，必传
+$receiptPath = '***'; //票据的存储路径，必传
+$logPath = '***';//日志的存储路径，必传
+$jsonPath = '***';
+$parameters = array();
+$pdo = '***';
+
+try {
+    $order_collect = new AdjustOrderCollect($logPath, $pdo, $receiptPath, $keySecret, $parameters, $jsonPath, '', '');
+
+    $return = $order_collect->adjustOrderCollectDispatch();
+} catch (\Exception $e) {
+    $return['result'] = false;
+    $return['message'] = $e->getMessage();
+}
+
+echo json_encode($return);
+```
