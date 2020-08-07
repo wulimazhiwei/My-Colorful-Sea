@@ -1,0 +1,64 @@
+function fetchData2($appid,$startdate,$enddate,$subid2,$event1,$event2,$period){
+    $collect_start = microtime(true);
+    $infomh = curl_multi_init();
+    $subsid = explode("_", $subid2)[0];
+    $subsku = explode("_", $subid2)[1];
+    $endevent = str_replace('"',"",str_replace(']','',str_replace('[','',json_encode($event1))));
+
+    $requests = array();
+    //apple 活跃维度 订阅数据
+    $applesuburl = "http://console.adpub.co/curl/iosappsubs?startdate=".$startdate."&enddate=".$enddate."&appid=".$appid."&period=".$period."&subsid=".$subsid."&dimention=active";
+    $requests['AppleSub']['url'] = $applesuburl;
+
+    //adjust 活跃维度 订阅数据 变现打点方案
+    $adjustsuburl = "http://adjust.adpub.co/curl/iosadjustsubunits?startdate=".$startdate."&enddate=".$enddate."&appid=".$appid."&period=".$period."&subsku=".$subsku."&dimention=active";
+    $requests['AdjustSub']['url'] = $adjustsuburl;
+
+    //adjust 活跃维度 订阅数据 运营打点方案 - 后台打点
+    $adjustendsuburl = "http://adjust.adpub.co/curl/iosadjustopsubunits?startdate=".$startdate."&enddate=".$enddate."&appid=".$appid."&event=".$endevent;
+    $requests['AdjustEndSub']['url'] = $adjustendsuburl;
+
+    if (!empty($event2)) {
+        //adjust 活跃维度 订阅数据 运营打点方案 - 客户端打点
+        $adjustclientsuburl = "http://adjust.adpub.co/curl/iosadjustopsubunits?startdate=".$startdate."&enddate=".$enddate."&appid=".$appid."&event=".$event2;
+        $requests['AdjustClientSub']['url'] = $adjustclientsuburl;
+    }
+
+    $catekeys = array_keys($requests);
+    foreach ($catekeys as $category){
+        $apiurl = $requests[$category]['url'];
+        $ch = curl_init($apiurl);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POST, 0);
+        curl_multi_add_handle($infomh, $ch);
+        $requests[$category]['curl_handle'] = $ch;
+    }
+    
+    $stillRunning = false;
+    do {
+        curl_multi_exec($infomh, $stillRunning);
+    } while ($stillRunning);
+
+    $dataArray = array();
+
+    foreach ($catekeys as $category){
+        $curl = $requests[$category]['curl_handle'];
+        curl_multi_remove_handle($infomh, $curl);
+        $dataArray[$category]['data'] = json_decode(curl_multi_getcontent($curl), true);
+        $dataArray[$category]['http_code'] = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $dataArray[$category]['run_time'] = curl_getinfo($curl, CURLINFO_TOTAL_TIME);
+        curl_close($curl);
+        Log::info($category." data fetch - run time:" . curl_getinfo($curl, CURLINFO_TOTAL_TIME));
+    }
+    curl_multi_close($infomh);
+
+    $collect_end = microtime(true);
+    Log::info("All data fetch - run time total:" . ($collect_end - $collect_start));
+    return $dataArray;
+}
