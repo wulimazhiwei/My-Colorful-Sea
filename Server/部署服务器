@@ -7,7 +7,7 @@ useradd admin -G users -d /home/admin -s /bin/bash
 chown -R admin:users /home/admin/
 chmod -R 755 /home/admin
 passwd admin
-admin/admin@1407#XN
+admin@1407#XN
 
 hostname game1
 vi /etc/hostname
