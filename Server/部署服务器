@@ -267,8 +267,18 @@ dpkg -i percona-release_latest.generic_all.deb
 percona-release setup pxc-80
 apt-get install percona-xtradb-cluster
 
+注意: 配置8.0版本的数据复制时需要在配置文件中加入下列配置. 同时需要将管理节点的mysql数据目录下的所有pem文件复制到其他节点上.
+vi /etc/mysql/mysql.conf.d/mysqld.cnf
+wsrep_provider_options="socket.ssl_key=server-key.pem;socket.ssl_cert=server-cert.pem;socket.ssl_ca=ca.pem"
+
+[sst]
+encrypt=4
+ssl-key=server-key.pem
+ssl-ca=ca.pem
+ssl-cert=server-cert.pem
+
 管理节点: systemctl start mysql@bootstrap.service
-其他节点: systemctl staart mysql
+其他节点: systemctl start mysql
 ########## 8.0
 
 game1/2/3 root/game@2004#XN
