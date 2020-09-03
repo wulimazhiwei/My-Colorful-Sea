@@ -275,6 +275,8 @@ pxc-encrypt-cluster-traffic=ON
 其他节点: systemctl start mysql
 ########## 8.0
 
+管理节点开启定时任务,写入配置文件: event_scheduler=ON
+
 game1/2/3 root/game@2004#XN
 
 percona 5.5配制方法：
