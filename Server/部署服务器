@@ -3,7 +3,7 @@ root /ios@1407#XN
 ----------create user and userdir-----------------
 mkdir /home/admin
 chmod -R 777 /home/admin
-useradd admin -G users -d /home/admin -s /bin/bash
+useradd admin -g users -d /home/admin -s /bin/bash
 chown -R admin:users /home/admin/
 chmod -R 755 /home/admin
 passwd admin
