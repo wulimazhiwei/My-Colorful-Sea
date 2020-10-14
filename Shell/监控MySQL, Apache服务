@@ -1,0 +1,24 @@
+sleep 5
+# fs2 mysql
+/bin/nc -z -v -w5 96.126.101.165 3306 > $DIR/.portcheck.log 2>&1
+if cat $DIR/.portcheck.log | grep 'succeeded';
+then
+echo ""
+else
+cat $DIR/checkport.txt  $DIR/.portcheck.log > $DIR/.portsendmail.txt
+echo " ------ fs2 mysql server" >> $DIR/.portsendmail.txt
+/usr/sbin/ssmtp alarmofserver@mavericksmobile.com <$DIR/.portsendmail.txt
+fi
+
+# acr3
+echo "" > $DIR/.touch-acr3.log
+wget -t 2  --no-check-certificate -T 5 -S  -q  -o $DIR/.touch-acr3.log -P $DIR http://52.70.208.0/shell/touch.txt
+sleep 5
+if cat $DIR/.touch-acr3.log | grep 'HTTP/1.1 200 OK';
+then
+echo ""
+else
+cat $DIR/message-acr3.txt $DIR/.touch-acr3.log > $DIR/.sendmail.txt
+/usr/sbin/ssmtp alarmofserver@mavericksmobile.com <$DIR/.sendmail.txt
+fi
+#rm $DIR/.touch-acr3.log;
