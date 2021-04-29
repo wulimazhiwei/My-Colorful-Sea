@@ -116,14 +116,11 @@ exit $ERROR
 
 ----------OS env definition-----------------
 apt-get update
+sudo apt-get install php7.4 php7.4-common php7.4-pdo php7.4-curl php7.4-xml php7.4-zip php7.4-gd php7.4-mysql php7.4-mbstring php-bcmath
 
 // for php
-sudo apt-get install libaprutil1 apache2 php libapache2-mod-php
-// for keyinfo
-sudo phpenmod mcrypt
-apt-get install php7.2-mbstring php-mysql
-// for textfun hashids
-apt-get install php-bcmath
+sudo apt-get install libaprutil1 apache2 libapache2-mod-php
+
 2. conf
 vi /etc/sysctl.conf
 net.netfilter.nf_conntrack_generic_timeout = 120
