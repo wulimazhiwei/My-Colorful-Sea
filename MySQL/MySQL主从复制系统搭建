@@ -31,7 +31,8 @@ expire_logs_days=7
 [mysqld]
 # slave
 server_id=2
-read-only
+read-only=1
+super_read_only=1
 relay-log = /var/log/mysql/mysql-relay-bin.log
 log_bin = /var/log/mysql/mysql-bin.log
 
