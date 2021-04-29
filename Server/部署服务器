@@ -1,5 +1,16 @@
 root /ios@1407#XN
 
+----------制作swap分区-----------------
+dd if=/dev/zero of=/var/swap bs=1024 count=4194304 //4G大小，count=4096*1024
+mkswap /var/swap
+swapon /var/swap 
+chmod 0600 /var/swap 
+vi /etc/fstab 
+/var/swap swap swap defaults 0 0
+
+swapoff /var/swap //取消分区挂载
+
+
 ----------create user and userdir-----------------
 mkdir /home/admin
 chmod -R 777 /home/admin
