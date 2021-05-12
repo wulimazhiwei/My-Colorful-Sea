@@ -1,0 +1,16 @@
+#https://blog.csdn.net/snowdream86/article/details/106608928
+1、服务器配置：Ubuntu 20.04 + Redis 5.0 
+2、sudo apt install redis-server redis-cli 
+
+3、配置文件：vi /etc/redis/redis.conf 
+
+4、启动：service redis-server start
+
+5、如果修改了数据存放目录的路径，重新启动报错：
+redis-server.service: Can't open PID file /run/redis/redis-server.pid (yet?) after start: Operation not permitted 或者
+Can't open the append-only file: Read-only file system
+
+这是因为redis定义了数据目录的读写权限，只给了/var/lib/redis目录，需要给新目录授予权限：
+vi /etc/systemd/system/redis.service
+[Service] ### service下添加新目录的读写权限
+ReadWritePaths=-/srv/redis
