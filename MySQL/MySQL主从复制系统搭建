@@ -16,6 +16,11 @@ cp -rp /var/lib/mysql /srv
 
 service apparmor restart
 
+#/etc/apparmor.d/usr.sbin.mysqld 
+# Allow data dir access
+  /var/lib/mysql/ r,
+  /var/lib/mysql/** rwk,
+
 2、master数据库配置文件： vi /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
 #master
