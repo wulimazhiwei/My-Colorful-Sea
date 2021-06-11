@@ -53,3 +53,6 @@ do
         mysql -u${APP} -p${APP}"@1407" -D${APP} -e "load data infile ""'"${LOCALLOG}${FILE}"'"" ignore into table ${table};"
     done
 done
+
+
+# exec("mysql -uxxx -pxxxx -D adjust -e \"LOAD DATA INFILE '/var/lib/mysql-files/".$filepath."' replace INTO TABLE ILRD_MIDDLE FIELDS TERMINATED BY ',' (created_at,adjustid,appid,app_version,activity_kind,country,currency,network_placement_id,ad_revenue_network,ad_revenue_unit,adgroup_id,adgroup_name,adgroup_type,adunit_id,adunit_name,precision_t,ad_impressions_count,revenue_usd);\"");
