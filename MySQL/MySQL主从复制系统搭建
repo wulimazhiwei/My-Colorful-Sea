@@ -1,3 +1,14 @@
+#### 跑了一段时间的数据库搭建主从系统的方法
+1、MySQL开启binlog
+2、导出当前时间的快照数据
+mysqldump  -u ads -pads@1407 --single-transaction --master-data=2 ads > ads.sql
+3、将上一步的数据拷贝到目标服务器，然后source导入
+4、找到快照数据的binlog及复制位置
+cat ads.sql  | grep "MASTER_LOG_FILE" 
+-- CHANGE MASTER TO MASTER_LOG_FILE='mysql-bin.001392', MASTER_LOG_POS=23847988;
+5、重新在从库上建立主从关系
+
+#### 全新的数据库搭建主从系统的方法
 1、申请两台服务器master（50.116.30.207）、slave（198.74.51.41）， 分别安装相同版本的数据库。
 #https://vitux.com/how-to-install-and-configure-mysql-in-ubuntu-18-04-lts/
 sudo apt-get install mysql-server
