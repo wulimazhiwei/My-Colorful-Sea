@@ -34,8 +34,9 @@ conn net-net
     dpdaction=restart
     
  #配置信息说明：ip 45.79.91.84为linode vpn服务器的ip，34.122.44.40为Google vpn服务器的ip。
+ #注：Google VPN这边也需要配上peer ip，为对端的ip，这里是linode vpn服务器的ip。
  
- 3、配置vpn密钥
+3、配置vpn密钥
  vi /etc/ipsec.secrets
  # ipsec.secrets - strongSwan IPsec secrets file
 45.79.91.84 34.122.44.40 : PSK xiaoniu123
