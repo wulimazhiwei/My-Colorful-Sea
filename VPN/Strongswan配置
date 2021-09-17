@@ -1,0 +1,57 @@
+1、安装Strongswan
+sudo apt update
+sudo apt install strongswan strongswan-pki
+
+2、配置ipsec文件
+vi /etc/ipsec.conf
+conn %default
+    ikelifetime=600m # 36,000 s
+    keylife=180m # 10,800 s
+    rekeymargin=3m
+    keyingtries=3
+    keyexchange=ikev2
+    mobike=no
+    ike=aes256gcm16-sha512-modp4096
+    esp=aes256gcm16-sha512-modp8192
+    authby=psk
+
+conn net-net
+    left=%any # In case of NAT set to internal IP, e.x. 10.164.0.6
+    leftid=45.79.91.84
+    leftsubnet=192.168.0.0/16
+    leftauth=psk
+    right=34.122.44.40
+    rightid=34.122.44.40
+    rightsubnet=10.128.0.0/20
+    rightauth=psk
+    type=tunnel
+    # auto=add - means strongSwan won't try to initiate it
+    # auto=start - means strongSwan will try to establish connection as well
+    # Note that Google Cloud will also try to initiate the connection
+    auto=start
+    # dpdaction=restart - means strongSwan will try to reconnect if Dead Peer Detection spots
+    #                  a problem. Change to 'clear' if needed
+    dpdaction=restart
+    
+ #配置信息说明：ip 45.79.91.84为linode vpn服务器的ip，34.122.44.40为Google vpn服务器的ip。
+ 
+ 3、配置vpn密钥
+ vi /etc/ipsec.secrets
+ # ipsec.secrets - strongSwan IPsec secrets file
+45.79.91.84 34.122.44.40 : PSK xiaoniu123
+
+4、重启服务
+systemctl restart strongswan-starter
+systemctl enable strongswan-starter
+systemctl status strongswan-starter
+
+5、开启ip-forwarding
+vi /etc/sysctl.conf
+
+net.ipv4.ip_forward = 1
+net.ipv6.conf.all.forwarding = 1
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.all.send_redirects = 0
+
+6、加载配置
+sysctl -p
