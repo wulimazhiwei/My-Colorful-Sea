@@ -144,6 +144,8 @@ vi /etc/rc.local
 #!/bin/sh
 su root -l -c "sh /home/admin/enServer/ctrlapache.sh start"
 
+chmod +x /etc/rc.local
+
 4. change port 14070
 vi /etc/ssh/sshd_config
 service ssh restart
