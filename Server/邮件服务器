@@ -2,11 +2,11 @@
 
 查看vi /etc/ssmtp/ssmtp.conf
 
-root=houmian@mavericksmobile.com
+root=
 mailhub=smtp.exmail.qq.com:465
 rewriteDomain=mavericksmobile.com
-AuthUser=houmian@mavericksmobile.com   
-AuthPass=A123456
+AuthUser=
+AuthPass=
 FromLineOverride=YES
 UseTLS=YES
 
@@ -23,7 +23,6 @@ vi /etc/hosts
 
 127.0.0.1 localhost app301
 
-192.168.8.66 app301 app301.
 
 service sendmail stop
 service sendmail start
