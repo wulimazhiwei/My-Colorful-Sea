@@ -6,21 +6,15 @@ APP_KEY=eeklZZwL6vVHs5zOyfxJuWnJktAI3Syl
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=trend
-DB_USERNAME=trend
-DB_PASSWORD=trend@1407
+DB_DATABASE=
+DB_USERNAME=
+DB_PASSWORD=
 
-DB_HOST_CALLPLUS_TEST=172.104.64.7
+DB_HOST_CALLPLUS_TEST=
 DB_PORT_CALLPLUS_TEST=3306
-DB_DATABASE_CALLPLUS_TEST=ios_callplus
-DB_USERNAME_CALLPLUS_TEST=ios_callplus
-DB_PASSWORD_CALLPLUS_TEST=ios_callplus@1407
-
-DB_HOST_CALLPLUS=45.33.125.43
-DB_PORT_CALLPLUS=3306
-DB_DATABASE_CALLPLUS=ios_callplus
-DB_USERNAME_CALLPLUS=ios_callplus
-DB_PASSWORD_CALLPLUS=ios_callplus@1407
+DB_DATABASE_CALLPLUS_TEST=
+DB_USERNAME_CALLPLUS_TEST=
+DB_PASSWORD_CALLPLUS_TEST=
 
 CACHE_DRIVER=file
 SESSION_DRIVER=file
@@ -33,28 +27,17 @@ REDIS_PORT=6379
 MAIL_DRIVER=smtp
 MAIL_HOST=smtp.exmail.qq.com
 MAIL_PORT=465
-MAIL_USERNAME=alarm@mavericksmobile.com
-MAIL_PASSWORD=Alarm@123
+MAIL_USERNAME=
+MAIL_PASSWORD=
 MAIL_ENCRYPTION=ssl
 
 2、config/database.php
-'ios_callplus_test' => [
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST_CALLPLUS_TEST', '172.104.64.7'),
-            'database'  => env('DB_DATABASE_CALLPLUS_TEST', 'ios_callplus'),
-            'username'  => env('DB_USERNAME_CALLPLUS_TEST', 'ios_callplus'),
-            'password'  => env('DB_PASSWORD_CALLPLUS_TEST', 'ios_callplus@1205'),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
-        ],
         'ios_callplus' => [
             'driver'    => 'mysql',
-            'host'      => env('DB_HOST_CALLPLUS', '45.33.125.43'),
-            'database'  => env('DB_DATABASE_CALLPLUS', 'ios_callplus'),
-            'username'  => env('DB_USERNAME_CALLPLUS', 'ios_callplus'),
-            'password'  => env('DB_PASSWORD_CALLPLUS', 'ios_callplus@1205'),
+            'host'      => env('DB_HOST_CALLPLUS', ''),
+            'database'  => env('DB_DATABASE_CALLPLUS', ''),
+            'username'  => env('DB_USERNAME_CALLPLUS', ''),
+            'password'  => env('DB_PASSWORD_CALLPLUS', ''),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
