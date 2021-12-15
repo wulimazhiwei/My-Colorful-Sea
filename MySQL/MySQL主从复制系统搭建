@@ -53,7 +53,7 @@ relay-log = /var/log/mysql/mysql-relay-bin.log
 log_bin = /var/log/mysql/mysql-bin.log
 
 4、在master数据库里为slave数据库创建复制用户：
-GRANT REPLICATION SLAVE ON *.* TO 'repl'@'****' identified by 'repl@1407';
+GRANT REPLICATION SLAVE ON *.* TO 'repl'@'****' identified by 'Repl@1407';
 
 5、show master status;
 +------------------+----------+--------------+------------------+-------------------+
@@ -63,7 +63,7 @@ GRANT REPLICATION SLAVE ON *.* TO 'repl'@'****' identified by 'repl@1407';
 +------------------+----------+--------------+------------------+-------------------+
 
 6、在从库建立主从：
-CHANGE MASTER TO MASTER_HOST='****',MASTER_USER='repl', MASTER_PASSWORD='repl@1407', MASTER_LOG_FILE='mysql-bin.000380', MASTER_LOG_POS= 154;
+CHANGE MASTER TO MASTER_HOST='****',MASTER_USER='repl', MASTER_PASSWORD='Repl@1407', MASTER_LOG_FILE='mysql-bin.000380', MASTER_LOG_POS= 154;
 
 7、启动slave：
 START SLAVE;
