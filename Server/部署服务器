@@ -255,6 +255,7 @@ vi /etc/fstab
 #单机数据库5.6版本 https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04
 #单机数据库8.0版本 https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04
 #集群 https://www.percona.com/doc/percona-xtradb-cluster/5.6/howtos/ubuntu_howto.html#ubuntu-howto
+
 ####
 #卸载重装pxc https://docs.percona.com/percona-distribution-for-mysql/8.0/uninstalling.html
 sudo apt remove percona-xtradb-* //移除相关软件
@@ -263,6 +264,21 @@ dpkg -l | grep percona //查看软件已清除
 percona-release //查看可安装版本
 percona-release setup pxc-80
 sudo apt install percona-xtradb-cluster
+###
+
+###二级制安装
+wget https://downloads.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-8.0.21/binary/debian/focal/x86_64/Percona-XtraDB-Cluster-8.0.21-r248-focal-x86_64-bundle.tar
+tar -xf Percona-XtraDB-Cluster-8.0.21-r248-focal-x86_64-bundle.tar
+
+sudo apt-get install libaio1 libtinfo5
+
+dpkg -i percona-xtradb-cluster-common_8.0.21-12-1.focal_amd64.deb
+dpkg -i percona-xtradb-cluster-client_8.0.21-12-1.focal_amd64.deb
+dpkg -i percona-xtradb-cluster_8.0.21-12-1.focal_amd64.deb
+dpkg -i percona-xtradb-cluster-server_8.0.21-12-1.focal_amd64.deb 
+
+dpkg -l | grep percona
+
 ###
 
 #其他版本
