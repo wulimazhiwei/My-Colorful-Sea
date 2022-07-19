@@ -262,6 +262,7 @@ dpkg -l | grep percona //查看软件已清除
 
 percona-release //查看可安装版本
 percona-release setup pxc-80
+sudo apt install percona-xtradb-cluster
 ###
 
 #其他版本
