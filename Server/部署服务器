@@ -281,6 +281,9 @@ dpkg -l | grep percona
 
 #删除二进制安装的软件
 dpkg -P percona-xtradb-cluster
+dpkg -P percona-xtradb-cluster-server
+dpkg -P percona-xtradb-cluster-common  
+dpkg -P percona-xtradb-cluster-client
 ###
 
 #其他版本
