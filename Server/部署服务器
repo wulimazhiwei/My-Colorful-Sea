@@ -266,7 +266,7 @@ percona-release setup pxc-80
 sudo apt install percona-xtradb-cluster
 ###
 
-###二级制安装
+###二进制安装
 wget https://downloads.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-8.0.21/binary/debian/focal/x86_64/Percona-XtraDB-Cluster-8.0.21-r248-focal-x86_64-bundle.tar
 tar -xf Percona-XtraDB-Cluster-8.0.21-r248-focal-x86_64-bundle.tar
 
@@ -279,6 +279,8 @@ dpkg -i percona-xtradb-cluster-server_8.0.21-12-1.focal_amd64.deb
 
 dpkg -l | grep percona
 
+#删除二进制安装的软件
+dpkg -P percona-xtradb-cluster
 ###
 
 #其他版本
