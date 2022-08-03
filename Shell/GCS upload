@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# CURR=`date -d "1 day ago" +'%Y-%m-%d'`
+CURR=$1
+APP_TOKEN=$2
+
+#LOCALBASEDIR="/home/ads/adjust-rawdata/zo4f3cos7pc0/zo4f3cos7pc0_2020-07-14T230000_f9d88aa9bfd07f14235cf0425abdcfee_be822a.csv"
+LOCALBASEDIR="/home/ads/adjust-rawdata/"${APP_TOKEN}
+REMOTEBASEDIR="/home/ads/gcs-upload/data/"${APP_TOKEN}"_"${CURR}"_extract.csv"
+ 
+cd ${LOCALBASEDIR};
+
+#adjustid,appid,version,network_name,country,nstalled_at,campaign_name,adgroup_name,creative_name
+
+`find ./${APP_TOKEN}"_"${CURR}* -exec cat {} \; | grep ",install," | grep -v "sandbox" |
+awk -F "," '{print $1","$2","$4","$6","$8","strftime("%Y-%m-%d",$11)","$27","$28","$29}' |
+grep "${CURR}" > ${REMOTEBASEDIR}`
+
+gsutil cp  ${REMOTEBASEDIR} gs://***-bucket/
+
+### cron job
+# 0 1 * * * sh /home/ads/gcs-upload/script/adjust_gcs_upload.sh `/bin/date +"\%Y-\%m-\%d" -d "-1 days"` zo4f3cos7pc0
+
+### env configure
+# sudo apt-get install apt-transport-https ca-certificates gnupg
+# echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+# curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+# sudo apt-get update && sudo apt-get install google-cloud-cli
+# gcloud init
+
+### gcloud init
+# 1、You must log in to continue. Would you like to log in (Y/n)?  Y
+# 2、Please enter numeric choice or text value (must exactly match list item):  2 
+# 3、Do you want to configure a default Compute Region and Zone? (Y/n)?  n
+# ok
+
+### test configure
+# gsutil ls
