@@ -267,15 +267,17 @@ sudo apt install percona-xtradb-cluster
 ###
 
 ###二进制安装
-wget https://downloads.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-8.0.21/binary/debian/focal/x86_64/Percona-XtraDB-Cluster-8.0.21-r248-focal-x86_64-bundle.tar
-tar -xf Percona-XtraDB-Cluster-8.0.21-r248-focal-x86_64-bundle.tar
+wget https://downloads.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-8.0.19-10.1/binary/debian/focal/x86_64/percona-xtradb-cluster-client_8.0.19-10-1.focal_amd64.deb
+wget https://downloads.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-8.0.19-10.1/binary/debian/focal/x86_64/percona-xtradb-cluster-common_8.0.19-10-1.focal_amd64.deb
+wget https://downloads.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-8.0.19-10.1/binary/debian/focal/x86_64/percona-xtradb-cluster-server_8.0.19-10-1.focal_amd64.deb
+wget https://downloads.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-8.0.19-10.1/binary/debian/focal/x86_64/percona-xtradb-cluster_8.0.19-10-1.focal_amd64.deb
 
 sudo apt-get install libaio1 libtinfo5
 
-dpkg -i percona-xtradb-cluster-common_8.0.21-12-1.focal_amd64.deb
-dpkg -i percona-xtradb-cluster-client_8.0.21-12-1.focal_amd64.deb
-dpkg -i percona-xtradb-cluster_8.0.21-12-1.focal_amd64.deb
-dpkg -i percona-xtradb-cluster-server_8.0.21-12-1.focal_amd64.deb 
+dpkg -i percona-xtradb-cluster-common_8.0.19-10-1.focal_amd64.deb
+dpkg -i percona-xtradb-cluster-client_8.0.19-10-1.focal_amd64.deb
+dpkg -i percona-xtradb-cluster-server_8.0.19-10-1.focal_amd64.deb
+dpkg -i percona-xtradb-cluster_8.0.19-10-1.focal_amd64.deb
 
 dpkg -l | grep percona
 
