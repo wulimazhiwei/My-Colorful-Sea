@@ -268,7 +268,7 @@ sudo apt install percona-xtradb-cluster
 
 ###二进制安装
 sudo apt-get install libaio1 libtinfo5 debsums libdbd-mysql-perl libev4 libmecab2 libtirpc3 socat
-#安装qpress
+#安装qpress https://ubuntu.pkgs.org/20.04/percona-amd64/qpress_11-1.focal_amd64.deb.html
 wget https://repo.percona.com/apt/pool/main/q/qpress/qpress_11-1.focal_amd64.deb
 dpkg -i qpress_11-1.focal_amd64.deb
 
