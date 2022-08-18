@@ -1,0 +1,7 @@
+证书配置
+sudo certbot --expand -d xxxx.com  abc.xxxx.com
+证书自动续订配置
+vi /etc/crontab 
+0 0 1 */2 * root /usr/bin/certbot renew  --force-renewal		
+		
+		
