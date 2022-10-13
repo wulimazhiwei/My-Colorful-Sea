@@ -31,4 +31,5 @@ socks pass {
         log: connect disconnect error
 }
 
-启动：service danted start
+启动：/etc/init.d/danted start
+
