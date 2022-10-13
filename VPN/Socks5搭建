@@ -1,3 +1,5 @@
+#https://www.digitalocean.com/community/tutorials/how-to-set-up-dante-proxy-on-ubuntu-20-04
+
 更新源：sudo apt update
 安装：sudo apt install dante-server
 备份原配置文件：sudo mv /etc/danted.conf /etc/danted.conf.bak
