@@ -32,4 +32,4 @@ socks pass {
 }
 
 启动：/etc/init.d/danted start
-
+netstat -anp | grep 1080
