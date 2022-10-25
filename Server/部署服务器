@@ -272,6 +272,10 @@ sudo apt-get install libaio1 libtinfo5 debsums libdbd-mysql-perl libev4 libmecab
 wget https://repo.percona.com/apt/pool/main/q/qpress/qpress_11-1.focal_amd64.deb
 dpkg -i qpress_11-1.focal_amd64.deb
 
+#xtrabackup 2.4
+wget wget https://downloads.percona.com/downloads/Percona-XtraBackup-2.4/Percona-XtraBackup-2.4.26/binary/debian/focal/x86_64/percona-xtrabackup-24_2.4.26-1.focal_amd64.deb
+dpkg -i percona-xtrabackup-24_2.4.26-1.focal_amd64.deb
+
 wget https://downloads.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-8.0.19-10.1/binary/debian/focal/x86_64/percona-xtradb-cluster-client_8.0.19-10-1.focal_amd64.deb
 wget https://downloads.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-8.0.19-10.1/binary/debian/focal/x86_64/percona-xtradb-cluster-common_8.0.19-10-1.focal_amd64.deb
 wget https://downloads.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-8.0.19-10.1/binary/debian/focal/x86_64/percona-xtradb-cluster-server_8.0.19-10-1.focal_amd64.deb
