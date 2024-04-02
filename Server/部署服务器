@@ -422,10 +422,10 @@ admin  hard  nofile 20000
 
 ------------  apparmor  ---------------
 vi /etc/apparmor.d/usr.sbin.mysqld 
-
 # Allow data dir access
   /var/lib/mysql/ r,
   /var/lib/mysql/** rwk,
   /srv/mysql/ r,
   /srv/mysql/** rwk,
 	
+service apparmor restart
