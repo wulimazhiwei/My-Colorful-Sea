@@ -1,0 +1,10 @@
+安装过程中可能会报错，导致无法重新配置驱动：
+dpkg-deb: error: paste subprocess was killed by signal (Broken pipe) 
+
+解决办法：
+cd /var/cache/apt/archives/
+dpkg -i --force-overwrite  nvidia-compute-utils-535_535.183.01-0ubuntu1_amd64.deb  哪个报错执行一遍，多个报错执行多遍
+apt -f install  
+
+
+这个过程中会调用initramfs-tools 生成对应kernel的init，比如/boot/initrd.img-6.5.0-1023-gcp，这样在重启之后也可以保证系统带驱动
