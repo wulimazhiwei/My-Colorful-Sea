@@ -1,0 +1,11 @@
+1、配置Java环境
+2、配置Java home
+which java查看安装路径
+
+vi ~/.bash_profile
+export JAVA_HOME=/opt/homebrew/opt/openjdk
+export PATH=$JAVA_HOME/bin:$PATH
+
+3、启动sk_rpc服务
+cd sk_rpc/bin
+sh sk_rpc.sh
